@@ -39,6 +39,15 @@ st.markdown("""
             border-radius: 5px;
             border: none;
         }
+        .stRadio > div {
+            flex-direction: row;
+            justify-content: center;
+        }
+        .stRadio label {
+            padding-right: 1rem;
+            font-size: 1.2rem;
+            font-weight: 500;
+        }
     </style>
 """, unsafe_allow_html=True)
 
@@ -215,9 +224,46 @@ def run_forecasting_app():
     )
     st.altair_chart(sarima_chart)
 
-# Add a sidebar for navigation
-st.sidebar.title("Navigation")
-page = st.sidebar.selectbox("Choose a page:", ["About Us", "Forecasting Models"])
+    # Separate Plotting for LSTM
+    st.subheader('LSTM Forecast')
+    lstm_chart = alt.Chart(forecast_data_lstm).mark_line(color='green').encode(
+        x=alt.X('Year:O', title='Year'),
+        y='Forecasted General Index (LSTM):Q',
+        tooltip=['Year:O', 'Forecasted General Index (LSTM):Q']
+    ).properties(
+        width=700,
+        height=400
+    )
+    st.altair_chart(lstm_chart)
+
+    # Combined Forecast Plot
+    st.subheader('Combined Forecast Comparison')
+    combined_data = pd.DataFrame({
+        'Year': forecast_index_sarima.year,
+        'SARIMA': forecast_mean_sarima,
+        'LSTM': future_predictions_lstm_inv.flatten()
+    })
+    combined_chart = alt.Chart(combined_data).transform_fold(
+        ['SARIMA', 'LSTM'],
+        as_=['Model', 'Forecasted General Index']
+    ).mark_line().encode(
+        x=alt.X('Year:O', title='Year'),
+        y='Forecasted General Index:Q',
+        color='Model:N',
+        tooltip=['Year:O', 'Model:N', 'Forecasted General Index:Q']
+    ).properties(
+        width=700,
+        height=400
+    )
+    st.altair_chart(combined_chart)
+
+    # Display MSE and RMSE for each model
+    st.subheader('Model Evaluation Metrics')
+    st.write(f"SARIMA - MSE: {mse_sarima}, RMSE: {rmse_sarima}")
+    st.write(f"LSTM - MSE: {mse_lstm}, RMSE: {rmse_lstm}")
+
+# Add navigation to the top
+page = st.radio("Navigate to:", ["About Us", "Forecasting Models"], horizontal=True)
 
 # Render the selected page
 if page == "About Us":
