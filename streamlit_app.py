@@ -7,6 +7,39 @@ from sklearn.metrics import mean_squared_error, mean_absolute_error, precision_s
 from statsmodels.tsa.statespace.sarimax import SARIMAX
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import LSTM, Dense, Dropout
+st.markdown("""
+    <style>
+    .main { 
+        background-image: url('https://images.app.goo.gl/9ZEtZ6XoZ8AM9tiH6');
+        background-size: cover;
+        background-position: center;
+        color: #333;
+    }
+    .title {
+        font-size: 36px;
+        color: #4CAF50;
+        text-align: center;
+        padding: 10px;
+        background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent background for readability */
+    }
+    .subheader {
+        font-size: 24px;
+        color: #2196F3;
+        margin-top: 20px;
+        margin-bottom: 10px;
+        background-color: rgba(255, 255, 255, 0.8);
+        padding: 5px;
+    }
+    .metric {
+        font-size: 18px;
+        font-weight: bold;
+        color: #FF5722;
+        background-color: rgba(255, 255, 255, 0.8);
+        padding: 5px;
+        border-radius: 5px;
+    }
+    </style>
+""", unsafe_allow_html=True)
 
 # Front-end styling with custom CSS
 st.markdown("""
