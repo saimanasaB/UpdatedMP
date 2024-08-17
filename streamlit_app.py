@@ -22,7 +22,7 @@ img_base64 = get_base64_of_image(image_path)
 
 # Create the CSS with the Base64 encoded image
 # Updated CSS with more attractive styling for 'About Us' and 'Contact Us' pages
-# Updated CSS with full-width content adjustments
+# Updated CSS with more attractive styling for 'About Us' and 'Contact Us' pages
 st.markdown(f"""
     <style>
     .main {{
@@ -30,69 +30,131 @@ st.markdown(f"""
         background-size: cover;
         background-position: center;
         color: #333;
-        width: 100vw;
-        height: 100vh;
-        overflow: hidden;
     }}
     .title {{
         font-size: 36px;
-        color: #4CAF50;
+        color: #ffffff;
         text-align: center;
         padding: 20px;
-        background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent background for readability */
-        width: 100%;
-        position: fixed;
-        top: 0;
-        left: 0;
-        z-index: 1;
+        background: linear-gradient(to right, #4CAF50, #81C784);
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }}
     .subheader {{
         font-size: 24px;
-        color: #2196F3;
+        color: #ffffff;
         margin-top: 20px;
         margin-bottom: 10px;
-        background-color: rgba(255, 255, 255, 0.8);
+        background: linear-gradient(to right, #2196F3, #64B5F6);
         padding: 10px;
+        border-radius: 8px;
+        text-align: center;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }}
     .metric {{
         font-size: 18px;
         font-weight: bold;
-        color: #FF5722;
-        background-color: rgba(255, 255, 255, 0.8);
+        color: #ffffff;
+        background: linear-gradient(to right, #FF5722, #FF8A65);
         padding: 10px;
-        border-radius: 5px;
-        margin: 10px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        text-align: center;
     }}
     .nav {{
         display: flex;
         justify-content: center;
         margin-bottom: 20px;
-        position: fixed;
-        top: 60px; /* Adjust based on the height of the title */
-        left: 0;
-        width: 100%;
-        z-index: 1;
     }}
     .nav input[type="radio"] {{
         display: none;
     }}
     .nav label {{
-        background-color: #4CAF50;
-        color: white;
-        padding: 10px 20px;
-        border-radius: 5px;
+        background: linear-gradient(to right, #4CAF50, #81C784);
+        color: #ffffff;
+        padding: 12px 24px;
+        border-radius: 8px;
         cursor: pointer;
         margin: 0 5px;
         text-align: center;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        font-weight: bold;
+        transition: background 0.3s ease;
     }}
     .nav input[type="radio"]:checked + label {{
-        background-color: #333;
+        background: linear-gradient(to right, #333333, #616161);
     }}
     .content {{
-        padding: 80px 20px; /* Adjust padding based on the title and navigation height */
-        height: calc(100vh - 80px); /* Ensure content area height adjusts to viewport */
-        box-sizing: border-box;
-        overflow-y: auto; /* Add scrollbar if content exceeds viewport height */
+        font-size: 22px;
+        line-height: 1.8;
+        color: #333;
+        background: rgba(255, 255, 255, 0.9);
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }}
+    .content h2 {{
+        font-size: 32px;
+        color: #4CAF50;
+        text-align: center;
+    }}
+    .content h3 {{
+        font-size: 26px;
+        color: #2196F3;
+    }}
+    .content ul {{
+        font-size: 20px;
+        margin: 10px 0;
+        padding: 0;
+    }}
+    .content ul li {{
+        margin-bottom: 10px;
+    }}
+    .content a {{
+        color: #4CAF50;
+        text-decoration: none;
+        font-weight: bold;
+    }}
+    .content a:hover {{
+        text-decoration: underline;
+    }}
+    .form-container {{
+        font-size: 22px;
+        line-height: 1.8;
+        color: #333;
+        background: rgba(255, 255, 255, 0.9);
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }}
+    .form-container form {{
+        display: flex;
+        flex-direction: column;
+    }}
+    .form-container label {{
+        font-size: 20px;
+        margin-top: 10px;
+    }}
+    .form-container input, .form-container textarea {{
+        padding: 10px;
+        margin-top: 5px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 18px;
+    }}
+    .form-container input[type="submit"] {{
+        background: linear-gradient(to right, #4CAF50, #81C784);
+        color: #ffffff;
+        padding: 12px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 20px;
+        font-weight: bold;
+        transition: background 0.3s ease;
+    }}
+    .form-container input[type="submit"]:hover {{
+        background: linear-gradient(to right, #333333, #616161);
     }}
     </style>
 """, unsafe_allow_html=True)
