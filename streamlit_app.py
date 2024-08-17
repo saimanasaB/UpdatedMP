@@ -30,44 +30,47 @@ st.markdown(f"""
         color: #333;
     }}
     .title {{
-        font-size: 36px;
-        color: #4CAF50;
+        font-size: 40px; /* Increased font size */
+        color: #ffffff; /* Changed color to white for better visibility */
         text-align: center;
-        padding: 10px;
-        background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent background for readability */
+        padding: 15px;
+        background-color: rgba(0, 0, 0, 0.6); /* Darker semi-transparent background */
+        border-radius: 8px;
     }}
     .subheader {{
-        font-size: 24px;
-        color: #2196F3;
-        margin-top: 20px;
-        margin-bottom: 10px;
-        background-color: rgba(255, 255, 255, 0.8);
-        padding: 5px;
+        font-size: 28px; /* Increased font size */
+        color: #00bcd4; /* Changed color to a lighter blue */
+        margin-top: 25px; /* Increased margin for spacing */
+        margin-bottom: 15px;
+        background-color: rgba(255, 255, 255, 0.9); /* Slightly lighter background for readability */
+        padding: 10px;
+        border-radius: 8px;
     }}
     .metric {{
-        font-size: 18px;
+        font-size: 20px; /* Increased font size */
         font-weight: bold;
-        color: #FF5722;
-        background-color: rgba(255, 255, 255, 0.8);
-        padding: 5px;
-        border-radius: 5px;
+        color: #ff5722; /* Changed color to a stronger orange */
+        background-color: rgba(255, 255, 255, 0.9); /* Slightly lighter background */
+        padding: 10px;
+        border-radius: 8px;
     }}
     .nav {{
         display: flex;
         justify-content: center;
-        margin-bottom: 20px;
+        margin-bottom: 30px; /* Increased margin for spacing */
     }}
     .nav input[type="radio"] {{
         display: none;
     }}
     .nav label {{
-        background-color: #4CAF50;
+        background-color: #4caf50;
         color: white;
-        padding: 10px 20px;
-        border-radius: 5px;
+        padding: 12px 25px;
+        border-radius: 8px; /* Increased border radius for rounded corners */
         cursor: pointer;
-        margin: 0 5px;
+        margin: 0 10px; /* Increased margin for spacing */
         text-align: center;
+        font-size: 18px; /* Increased font size */
     }}
     .nav input[type="radio"]:checked + label {{
         background-color: #333;
