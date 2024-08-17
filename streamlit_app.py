@@ -426,12 +426,8 @@ elif page == "Contact Us":
     <li><a href="https://twitter.com/example" style="color: #4CAF50;">Twitter</a></li>
     <li><a href="https://facebook.com/example" style="color: #4CAF50;">Facebook</a></li>
     </ul>
-
     <h3 style='font-size: 26px; color: #2196F3;'>Get In Touch:</h3>
     If you have any inquiries or would like to discuss potential projects, please fill out the contact form below or use the contact details provided.
-
-    <p style='font-size: 20px;'>**Contact Form:** (You may integrate a contact form here if desired.)</p>
-
     <h3 style='font-size: 22px; color: #2196F3;'>Feedback Form:</h3>
     <p>We appreciate your feedback. Please fill out the form below:</p>
     
