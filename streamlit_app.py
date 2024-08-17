@@ -20,10 +20,7 @@ image_path = "inflation3.jpg"
 # Convert the image to a Base64 string
 img_base64 = get_base64_of_image(image_path)
 
-# Radio button for navigation
-option = st.radio('Choose a page', ['Home', 'About Us', 'Contact Us'])
-
-# Styles for the app
+# Create the CSS with the Base64 encoded image
 st.markdown(f"""
     <style>
     .main {{
@@ -37,7 +34,7 @@ st.markdown(f"""
         color: #4CAF50;
         text-align: center;
         padding: 10px;
-        background-color: rgba(255, 255, 255, 0.8);
+        background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent background for readability */
     }}
     .subheader {{
         font-size: 24px;
@@ -56,18 +53,44 @@ st.markdown(f"""
         border-radius: 5px;
     }}
     .about, .contact {{
-        font-size: 18px;
-        color: #333;
         background-color: rgba(255, 255, 255, 0.8);
         padding: 15px;
-        border-radius: 5px;
+        border-radius: 8px;
+        margin: 15px;
+    }}
+    .vertical-radio input[type="radio"] {{
+        display: block;
+        margin: 10px 0;
     }}
     </style>
 """, unsafe_allow_html=True)
 
-# Conditional rendering based on the selected option
-if option == "Home":
-    # Streamlit App Title
+# Radio buttons for navigation in vertical layout
+st.markdown("""
+    <div class="vertical-radio">
+        <label><input type="radio" name="page" value="About Us"> About Us</label>
+        <label><input type="radio" name="page" value="Home" checked> Home</label>
+        <label><input type="radio" name="page" value="Contact Us"> Contact Us</label>
+    </div>
+""", unsafe_allow_html=True)
+
+# Get selected page from the radio buttons
+page_selection = st.radio("Choose a page:", ["About Us", "Home", "Contact Us"], index=1)
+
+if page_selection == "About Us":
+    st.markdown('<div class="title">About Us</div>', unsafe_allow_html=True)
+    st.markdown("""
+    <div class='about'>
+    <h2>Welcome to Our Forecasting App!</h2>
+    <p>Our app provides insights into forecasting economic indices using advanced machine learning models. We leverage the power of Long Short-Term Memory (LSTM) networks and Seasonal Autoregressive Integrated Moving Average (SARIMA) models to deliver accurate forecasts and valuable metrics.</p>
+    <p><strong>Mission:</strong> To enhance decision-making with data-driven insights and advanced forecasting techniques.</p>
+    <p><strong>Vision:</strong> To be at the forefront of predictive analytics and contribute to solving real-world problems through innovative technologies.</p>
+    <p>Feel free to explore the "Home" page to see our forecasting models in action and the "About Us" page to learn more about our mission and vision.</p>
+    <p>Thank you for visiting!</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+elif page_selection == "Home":
     st.markdown('<div class="title">General Index Forecasting using LSTM and SARIMA</div>', unsafe_allow_html=True)
 
     # Load the dataset
@@ -187,27 +210,14 @@ if option == "Home":
     mse_sarima = mean_squared_error(dummy_future_actual, forecast_mean_sarima)
     rmse_sarima = np.sqrt(mse_sarima)
 
-    # Evaluate LSTM
-    precision_lstm = precision_score(dummy_binary_actual, lstm_binary_preds)
-    recall_lstm = recall_score(dummy_binary_actual, lstm_binary_preds)
-    f1_lstm = f1_score(dummy_binary_actual, lstm_binary_preds)
-    accuracy_lstm = accuracy_score(dummy_binary_actual, lstm_binary_preds)
-    mse_lstm = mean_squared_error(dummy_future_actual, future_predictions_lstm_inv.flatten())
-    rmse_lstm = np.sqrt(mse_lstm)
+    # Plot SARIMA and LSTM forecasts
+    st.subheader('Forecast Comparison: SARIMA vs LSTM')
 
-    st.subheader('Model Evaluation Metrics')
-    st.write(f"<div class='metric'>SARIMA - Precision: {precision_sarima:.2f}, Recall: {recall_sarima:.2f}, F1 Score: {f1_sarima:.2f}, Accuracy: {accuracy_sarima:.2f}, MSE: {mse_sarima:.2f}, RMSE: {rmse_sarima:.2f}</div>", unsafe_allow_html=True)
-    st.write(f"<div class='metric'>LSTM - Precision: {precision_lstm:.2f}, Recall: {recall_lstm:.2f}, F1 Score: {f1_lstm:.2f}, Accuracy: {accuracy_lstm:.2f}, MSE: {mse_lstm:.2f}, RMSE: {rmse_lstm:.2f}</div>", unsafe_allow_html=True)
-
-    # Create the forecast plot for SARIMA
-    forecast_df_sarima = pd.DataFrame({
+    # SARIMA Plot
+    sarima_chart = alt.Chart(pd.DataFrame({
         'Date': forecast_index_sarima,
-        'Forecast': forecast_mean_sarima,
-        'Lower Bound': forecast_conf_int_sarima.iloc[:, 0],
-        'Upper Bound': forecast_conf_int_sarima.iloc[:, 1]
-    })
-
-    forecast_chart_sarima = alt.Chart(forecast_df_sarima).mark_line(color='blue').encode(
+        'Forecast': forecast_mean_sarima
+    })).mark_line(color='blue').encode(
         x='Date:T',
         y='Forecast:Q'
     ).properties(
@@ -215,22 +225,11 @@ if option == "Home":
         height=400
     ).interactive()
 
-    forecast_chart_sarima = forecast_chart_sarima + alt.Chart(forecast_df_sarima).mark_errorband(opacity=0.2).encode(
-        x='Date:T',
-        y='lower_bound:Q',
-        y2='upper_bound:Q'
-    )
-
-    st.subheader('SARIMA Forecast')
-    st.altair_chart(forecast_chart_sarima)
-
-    # Create the forecast plot for LSTM
-    forecast_df_lstm = pd.DataFrame({
+    # LSTM Plot
+    lstm_chart = alt.Chart(pd.DataFrame({
         'Date': future_dates_lstm,
         'Forecast': future_predictions_lstm_inv.flatten()
-    })
-
-    forecast_chart_lstm = alt.Chart(forecast_df_lstm).mark_line(color='green').encode(
+    })).mark_line(color='red').encode(
         x='Date:T',
         y='Forecast:Q'
     ).properties(
@@ -238,56 +237,27 @@ if option == "Home":
         height=400
     ).interactive()
 
-    st.subheader('LSTM Forecast')
-    st.altair_chart(forecast_chart_lstm)
-
     # Comparison Plot
-    combined_forecast_df = pd.DataFrame({
-        'Date': pd.concat([forecast_df_sarima['Date'], forecast_df_lstm['Date']]),
-        'Forecast': pd.concat([forecast_df_sarima['Forecast'], forecast_df_lstm['Forecast']]),
-        'Model': ['SARIMA']*len(forecast_df_sarima) + ['LSTM']*len(forecast_df_lstm)
-    })
+    combined_chart = alt.layer(sarima_chart, lstm_chart).resolve_scale(y='shared')
+    st.altair_chart(combined_chart)
 
-    comparison_chart = alt.Chart(combined_forecast_df).mark_line().encode(
-        x='Date:T',
-        y='Forecast:Q',
-        color='Model:N'
-    ).properties(
-        width=700,
-        height=400
-    ).interactive()
+    st.subheader('Evaluation Metrics for SARIMA:')
+    st.write(f'**Mean Squared Error (MSE):** {mse_sarima}')
+    st.write(f'**Root Mean Squared Error (RMSE):** {rmse_sarima}')
+    st.write(f'**Precision:** {precision_sarima}')
+    st.write(f'**Recall:** {recall_sarima}')
+    st.write(f'**F1 Score:** {f1_sarima}')
+    st.write(f'**Accuracy:** {accuracy_sarima}')
 
-    st.subheader('Comparison of SARIMA and LSTM Forecasts')
-    st.altair_chart(comparison_chart)
-
-elif option == "About Us":
-    st.markdown('<div class="title">About Us</div>', unsafe_allow_html=True)
-    st.markdown("""
-    <div class='about'>
-    <h2>Welcome to Our Forecasting App!</h2>
-    <p>Our app provides insights into forecasting economic indices using advanced machine learning models. We leverage the power of Long Short-Term Memory (LSTM) networks and Seasonal Autoregressive Integrated Moving Average (SARIMA) models to deliver accurate forecasts and valuable metrics.</p>
-    <p><strong>Mission:</strong> To enhance decision-making with data-driven insights and advanced forecasting techniques.</p>
-    <p><strong>Vision:</strong> To be at the forefront of predictive analytics and contribute to solving real-world problems through innovative technologies.</p>
-    <p>Feel free to explore the "Home" page to see our forecasting models in action and the "About Us" page to learn more about our mission and vision.</p>
-    <p>Thank you for visiting!</p>
-    </div>
-    """, unsafe_allow_html=True)
-
-elif option == "Contact Us":
+elif page_selection == "Contact Us":
     st.markdown('<div class="title">Contact Us</div>', unsafe_allow_html=True)
     st.markdown("""
     <div class='contact'>
-    <h2>Get in Touch</h2>
-    <p>We would love to hear from you! Please use the form below to reach out with any questions, feedback, or inquiries.</p>
-    <form action="mailto:your-email@example.com" method="post" enctype="text/plain">
-        <label for="name">Name:</label><br>
-        <input type="text" id="name" name="name" required><br><br>
-        <label for="email">Email:</label><br>
-        <input type="email" id="email" name="email" required><br><br>
-        <label for="message">Message:</label><br>
-        <textarea id="message" name="message" rows="5" required></textarea><br><br>
-        <input type="submit" value="Send">
-    </form>
-    <p>If you prefer, you can also reach us at <a href="mailto:your-email@example.com">your-email@example.com</a>.</p>
+    <h2>Get in Touch!</h2>
+    <p>We would love to hear from you. If you have any questions or feedback, please reach out to us using the contact details below:</p>
+    <p><strong>Email:</strong> contact@forecastingapp.com</p>
+    <p><strong>Phone:</strong> +1 (123) 456-7890</p>
+    <p><strong>Address:</strong> 123 Data Drive, Analytics City, AC 12345</p>
+    <p>Thank you for your interest in our app. We look forward to connecting with you!</p>
     </div>
     """, unsafe_allow_html=True)
