@@ -349,6 +349,19 @@ elif page == "Contact Us":
 
     <p style='font-size: 20px;'>**Contact Form:** (You may integrate a contact form here if desired.)</p>
 
+    <h3 style='font-size: 22px; color: #2196F3;'>Feedback Form:</h3>
+    <p>We appreciate your feedback. Please fill out the form below:</p>
+    
+    <form action="https://example.com/feedback" method="post">
+        <label for="name">Name:</label><br>
+        <input type="text" id="name" name="name" required><br>
+        <label for="email">Email:</label><br>
+        <input type="email" id="email" name="email" required><br>
+        <label for="message">Message:</label><br>
+        <textarea id="message" name="message" rows="4" required></textarea><br>
+        <input type="submit" value="Submit">
+    </form>
+
     Thank you for your interest in connecting with us!
     </div>
     """, unsafe_allow_html=True)
