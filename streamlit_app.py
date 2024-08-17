@@ -199,7 +199,7 @@ if page == "About Us":
     <h3 style='font-size: 26px; color: #2196F3;'>Get Involved:</h3>
     We are always looking to collaborate with like-minded professionals and organizations. If you're interested in working with us or learning more about our services, please reach out through our contact page.
 
-    Thank you for visiting our website and learning more about us!
+    <br><br><center>Thank you for visiting our website and learning more about us!</center>
     </div>
     """, unsafe_allow_html=True)
 
