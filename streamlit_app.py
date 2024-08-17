@@ -365,4 +365,4 @@ elif page == "Contact Us":
 
     Thank you for your interest in connecting with us!
     </div>
-    """, unsafe_allow_html=True)                                                                                                              im not liking the CSS which are font size and colour of about us and contact us page could you please make it more attractive 
+    """, unsafe_allow_html=True)                                                                                                              im not liking the CSS which are font size and colour of about us and contact us page could you please make it more attractive      
