@@ -3,10 +3,11 @@ import numpy as np
 import altair as alt
 import streamlit as st
 from sklearn.preprocessing import MinMaxScaler
-from sklearn.metrics import mean_squared_error, precision_score, recall_score, f1_score, accuracy_score
+from sklearn.metrics import mean_squared_error, mean_absolute_error, precision_score, recall_score, f1_score, accuracy_score
 from statsmodels.tsa.statespace.sarimax import SARIMAX
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import LSTM, Dense, Dropout
+
 import base64
 
 # Function to encode the image file to base64
@@ -52,45 +53,29 @@ st.markdown(f"""
         padding: 5px;
         border-radius: 5px;
     }}
-    .about, .contact {{
-        background-color: rgba(255, 255, 255, 0.8);
-        padding: 15px;
-        border-radius: 8px;
-        margin: 15px;
-    }}
-    .vertical-radio input[type="radio"] {{
-        display: block;
-        margin: 10px 0;
-    }}
     </style>
 """, unsafe_allow_html=True)
 
-# Get selected page from the radio buttons
-page_selection = st.radio("Choose a page:",["About Us", "Home", "Contact Us"], index=1)
-
-if page_selection == "About Us":
+# Define page functions
+def about_us():
     st.markdown('<div class="title">About Us</div>', unsafe_allow_html=True)
-    st.markdown("""
-    <div class='about'>
-    <h2>Welcome to Our Forecasting App!</h2>
-    <p>Our app provides insights into forecasting economic indices using advanced machine learning models. We leverage the power of Long Short-Term Memory (LSTM) networks and Seasonal Autoregressive Integrated Moving Average (SARIMA) models to deliver accurate forecasts and valuable metrics.</p>
-    <p><strong>Mission:</strong> To enhance decision-making with data-driven insights and advanced forecasting techniques.</p>
-    <p><strong>Vision:</strong> To be at the forefront of predictive analytics and contribute to solving real-world problems through innovative technologies.</p>
-    <p>Feel free to explore the "Home" page to see our forecasting models in action and the "About Us" page to learn more about our mission and vision.</p>
-    <p>Thank you for visiting!</p>
-    </div>
-    """, unsafe_allow_html=True)
+    st.write("Welcome to the General Index Forecasting App!")
+    st.write("This application uses LSTM and SARIMA models to forecast future values of a general index.")
+    st.write("Our goal is to provide accurate and insightful forecasts to help in decision-making processes.")
+    st.write("If you have any questions or feedback, please visit the Contact Us page.")
 
-elif page_selection == "Home":
+def home():
     st.markdown('<div class="title">General Index Forecasting using LSTM and SARIMA</div>', unsafe_allow_html=True)
 
     # Load the dataset
     file_path = st.text_input('Enter file path of cleaned data (e.g., cleaned_data.csv)', 'cleaned_data.csv')
-    data = pd.read_csv(file_path)
-
-    # Display the DataFrame
-    st.subheader('Data Preview:')
-    st.dataframe(data)
+    try:
+        data = pd.read_csv(file_path)
+        st.subheader('Data Preview:')
+        st.dataframe(data)
+    except Exception as e:
+        st.error(f"Error loading data: {e}")
+        return
 
     # Select the relevant features
     data = data[['Year', 'Month', 'General index']]
@@ -209,62 +194,90 @@ elif page_selection == "Home":
     mse_lstm = mean_squared_error(dummy_future_actual, future_predictions_lstm_inv.flatten())
     rmse_lstm = np.sqrt(mse_lstm)
 
-    # Plot SARIMA and LSTM forecasts
-    st.subheader('Forecast Comparison: SARIMA vs LSTM')
+    st.subheader('Model Evaluation Metrics')
+    st.write(f"<div class='metric'>SARIMA - Precision: {precision_sarima}, Recall: {recall_sarima}, F1 Score: {f1_sarima}, Accuracy: {accuracy_sarima}, MSE: {mse_sarima}, RMSE: {rmse_sarima}</div>", unsafe_allow_html=True)
+    st.write(f"<div class='metric'>LSTM - Precision: {precision_lstm}, Recall: {recall_lstm}, F1 Score: {f1_lstm}, Accuracy: {accuracy_lstm}, MSE: {mse_lstm}, RMSE: {rmse_lstm}</div>", unsafe_allow_html=True)
 
-    # SARIMA Plot
-    sarima_chart = alt.Chart(pd.DataFrame({
+    # Prepare data for plotting SARIMA and LSTM forecasts
+    forecast_data_sarima = pd.DataFrame({
         'Date': forecast_index_sarima,
-        'Forecast': forecast_mean_sarima
-    })).mark_line(color='blue').encode(
-        x='Date:T',
-        y='Forecast:Q'
-    ).properties(
-        width=700,
-        height=400
-    ).interactive()
+        'Year': forecast_index_sarima.year,
+        'Forecasted General Index (SARIMA)': forecast_mean_sarima
+    })
 
-    # LSTM Plot
-    lstm_chart = alt.Chart(pd.DataFrame({
+    forecast_data_lstm = pd.DataFrame({
         'Date': future_dates_lstm,
-        'Forecast': future_predictions_lstm_inv.flatten()
-    })).mark_line(color='red').encode(
-        x='Date:T',
-        y='Forecast:Q'
+        'Year': future_dates_lstm.year,
+        'Forecasted General Index (LSTM)': future_predictions_lstm_inv.flatten()
+    })
+
+    # Separate Plotting for SARIMA
+    st.subheader('SARIMA Forecast')
+    sarima_chart = alt.Chart(forecast_data_sarima).mark_line(color='blue').encode(
+        x=alt.X('Year:O', title='Year'),
+        y='Forecasted General Index (SARIMA):Q',
+        tooltip=['Year:O', 'Forecasted General Index (SARIMA):Q']
     ).properties(
         width=700,
         height=400
-    ).interactive()
+    )
+    st.altair_chart(sarima_chart)
 
-    # Comparison Plot
-    combined_chart = alt.layer(sarima_chart, lstm_chart).resolve_scale(y='shared')
-    st.altair_chart(combined_chart)
+    # Separate Plotting for LSTM
+    st.subheader('LSTM Forecast')
+    lstm_chart = alt.Chart(forecast_data_lstm).mark_line(color='green').encode(
+        x=alt.X('Year:O', title='Year'),
+        y='Forecasted General Index (LSTM):Q',
+        tooltip=['Year:O', 'Forecasted General Index (LSTM):Q']
+    ).properties(
+        width=700,
+        height=400
+    )
+    st.altair_chart(lstm_chart)
 
-    st.subheader('Evaluation Metrics for SARIMA:')
-    st.write(f'**Mean Squared Error (MSE):** {mse_sarima}')
-    st.write(f'**Root Mean Squared Error (RMSE):** {rmse_sarima}')
-    st.write(f'**Precision:** {precision_sarima}')
-    st.write(f'**Recall:** {recall_sarima}')
-    st.write(f'**F1 Score:** {f1_sarima}')
-    st.write(f'**Accuracy:** {accuracy_sarima}')
+    # Comparison of forecasts
+    comparison_data = pd.concat([
+        forecast_data_sarima[['Year', 'Forecasted General Index (SARIMA)']].rename(columns={'Forecasted General Index (SARIMA)': 'Forecast', 'Year': 'Year'}).assign(Model='SARIMA'),
+        forecast_data_lstm[['Year', 'Forecasted General Index (LSTM)']].rename(columns={'Forecasted General Index (LSTM)': 'Forecast', 'Year': 'Year'}).assign(Model='LSTM')
+    ])
 
-    st.subheader('Evaluation Metrics for LSTM:')
-    st.write(f'**Mean Squared Error (MSE):** {mse_lstm}')
-    st.write(f'**Root Mean Squared Error (RMSE):** {rmse_lstm}')
-    st.write(f'**Precision:** {precision_lstm}')
-    st.write(f'**Recall:** {recall_lstm}')
-    st.write(f'**F1 Score:** {f1_lstm}')
-    st.write(f'**Accuracy:** {accuracy_lstm}')
+    comparison_chart = alt.Chart(comparison_data).mark_line().encode(
+        x=alt.X('Year:O', title='Year'),
+        y=alt.Y('Forecast:Q', title='Forecasted General Index'),
+        color='Model:N',
+        tooltip=['Year:O', 'Model:N', 'Forecast:Q']
+    ).properties(
+        width=700,
+        height=400
+    )
+    st.altair_chart(comparison_chart)
 
-elif page_selection == "Contact Us":
+    # Ensure the plots and metrics are displayed properly
+    st.subheader('Forecast Data')
+    st.write("Forecasted General Index using SARIMA:")
+    st.dataframe(forecast_data_sarima)
+
+    st.write("Forecasted General Index using LSTM:")
+    st.dataframe(forecast_data_lstm)
+
+def contact_us():
     st.markdown('<div class="title">Contact Us</div>', unsafe_allow_html=True)
-    st.markdown("""
-    <div class='contact'>
-    <h2>Get in Touch!</h2>
-    <p>We would love to hear from you. If you have any questions or feedback, please reach out to us using the contact details below:</p>
-    <p><strong>Email:</strong> contact@forecastingapp.com</p>
-    <p><strong>Phone:</strong> +1 (123) 456-7890</p>
-    <p><strong>Address:</strong> 123 Data Drive, Analytics City, AC 12345</p>
-    <p>Thank you for your interest in our app. We look forward to connecting with you!</p>
-    </div>
-    """, unsafe_allow_html=True)
+    st.write("For inquiries or feedback, please reach out to us at:")
+    st.write("**Email**: support@example.com")
+    st.write("**Phone**: +1-234-567-890")
+    st.write("**Address**: 123 Data St, Analytics City, AC 12345")
+
+# Main function to handle page navigation
+def main():
+    st.sidebar.title('Navigation')
+    page = st.radio('Select a Page', ('About Us', 'Home', 'Contact Us'), index=1)
+
+    if page == 'About Us':
+        about_us()
+    elif page == 'Home':
+        home()
+    elif page == 'Contact Us':
+        contact_us()
+
+if __name__ == "__main__":
+    main()
