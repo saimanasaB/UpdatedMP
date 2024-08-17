@@ -66,6 +66,97 @@ st.markdown(f"""
     }}
     </style>
 """, unsafe_allow_html=True)
+import streamlit as st
+
+# Radio button for navigation
+option = st.radio('Choose a page', ['Home', 'About Us', 'Contact Us'])
+
+# Styles for the app
+st.markdown("""
+    <style>
+    .main {
+        background-image: url("data:image/jpg;base64,{img_base64}");
+        background-size: cover;
+        background-position: center;
+        color: #333;
+    }
+    .title {
+        font-size: 36px;
+        color: #4CAF50;
+        text-align: center;
+        padding: 10px;
+        background-color: rgba(255, 255, 255, 0.8);
+    }
+    .subheader {
+        font-size: 24px;
+        color: #2196F3;
+        margin-top: 20px;
+        margin-bottom: 10px;
+        background-color: rgba(255, 255, 255, 0.8);
+        padding: 5px;
+    }
+    .metric {
+        font-size: 18px;
+        font-weight: bold;
+        color: #FF5722;
+        background-color: rgba(255, 255, 255, 0.8);
+        padding: 5px;
+        border-radius: 5px;
+    }
+    .about {
+        font-size: 18px;
+        color: #333;
+        background-color: rgba(255, 255, 255, 0.8);
+        padding: 15px;
+        border-radius: 5px;
+    }
+    .contact {
+        font-size: 18px;
+        color: #333;
+        background-color: rgba(255, 255, 255, 0.8);
+        padding: 15px;
+        border-radius: 5px;
+    }
+    </style>
+""", unsafe_allow_html=True)
+
+# Conditional rendering based on the selected option
+if option == "Home":
+    # Your existing Home page code here
+    # ...
+
+elif option == "About Us":
+    st.markdown('<div class="title">About Us</div>', unsafe_allow_html=True)
+    st.markdown("""
+    <div class='about'>
+    <h2>Welcome to Our Forecasting App!</h2>
+    <p>Our app provides insights into forecasting economic indices using advanced machine learning models. We leverage the power of Long Short-Term Memory (LSTM) networks and Seasonal Autoregressive Integrated Moving Average (SARIMA) models to deliver accurate forecasts and valuable metrics.</p>
+    <p><strong>Mission:</strong> To enhance decision-making with data-driven insights and advanced forecasting techniques.</p>
+    <p><strong>Vision:</strong> To be at the forefront of predictive analytics and contribute to solving real-world problems through innovative technologies.</p>
+    <p>Feel free to explore the "Home" page to see our forecasting models in action and the "About Us" page to learn more about our mission and vision.</p>
+    <p>Thank you for visiting!</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+elif option == "Contact Us":
+    st.markdown('<div class="title">Contact Us</div>', unsafe_allow_html=True)
+    st.markdown("""
+    <div class='contact'>
+    <h2>Get in Touch</h2>
+    <p>We would love to hear from you! Please use the form below to reach out with any questions, feedback, or inquiries.</p>
+    <form action="mailto:your-email@example.com" method="post" enctype="text/plain">
+        <label for="name">Name:</label><br>
+        <input type="text" id="name" name="name" required><br><br>
+        <label for="email">Email:</label><br>
+        <input type="email" id="email" name="email" required><br><br>
+        <label for="message">Message:</label><br>
+        <textarea id="message" name="message" rows="5" required></textarea><br><br>
+        <input type="submit" value="Send">
+    </form>
+    <p>If you prefer, you can also reach us at <a href="mailto:your-email@example.com">your-email@example.com</a>.</p>
+    </div>
+    """, unsafe_allow_html=True)
+
 
 # Radio buttons for navigation
 option = st.radio("Select Page", ["Home", "About Us"], index=0, horizontal=True)
