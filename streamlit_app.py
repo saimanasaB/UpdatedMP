@@ -203,6 +203,68 @@ if option == "Home":
     st.write(f"<div class='metric'>SARIMA - Precision: {precision_sarima:.2f}, Recall: {recall_sarima:.2f}, F1 Score: {f1_sarima:.2f}, Accuracy: {accuracy_sarima:.2f}, MSE: {mse_sarima:.2f}, RMSE: {rmse_sarima:.2f}</div>", unsafe_allow_html=True)
     st.write(f"<div class='metric'>LSTM - Precision: {precision_lstm:.2f}, Recall: {recall_lstm:.2f}, F1 Score: {f1_lstm:.2f}, Accuracy: {accuracy_lstm:.2f}, MSE: {mse_lstm:.2f}, RMSE: {rmse_lstm:.2f}</div>", unsafe_allow_html=True)
 
+    # Prepare data for plotting SARIMA and LSTM forecasts
+    forecast_data_sarima = pd.DataFrame({
+        'Date': forecast_index_sarima,
+        'Year': forecast_index_sarima.year,
+        'Forecasted General Index (SARIMA)': forecast_mean_sarima
+    })
+
+    forecast_data_lstm = pd.DataFrame({
+        'Date': future_dates_lstm,
+        'Year': future_dates_lstm.year,
+        'Forecasted General Index (LSTM)': future_predictions_lstm_inv.flatten()
+    })
+
+    # Separate Plotting for SARIMA
+    st.subheader('SARIMA Forecast')
+    sarima_chart = alt.Chart(forecast_data_sarima).mark_line(color='blue').encode(
+        x=alt.X('Year:O', title='Year'),
+        y='Forecasted General Index (SARIMA):Q',
+        tooltip=['Year:O', 'Forecasted General Index (SARIMA):Q']
+    ).properties(
+        width=700,
+        height=400
+    )
+    st.altair_chart(sarima_chart)
+
+    # Separate Plotting for LSTM
+    st.subheader('LSTM Forecast')
+    lstm_chart = alt.Chart(forecast_data_lstm).mark_line(color='green').encode(
+        x=alt.X('Year:O', title='Year'),
+        y='Forecasted General Index (LSTM):Q',
+        tooltip=['Year:O', 'Forecasted General Index (LSTM):Q']
+    ).properties(
+        width=700,
+        height=400
+    )
+    st.altair_chart(lstm_chart)
+
+    # Comparison of forecasts
+    comparison_data = pd.concat([
+        forecast_data_sarima[['Year', 'Forecasted General Index (SARIMA)']].rename(columns={'Forecasted General Index (SARIMA)': 'Forecast', 'Year': 'Year'}).assign(Model='SARIMA'),
+        forecast_data_lstm[['Year', 'Forecasted General Index (LSTM)']].rename(columns={'Forecasted General Index (LSTM)': 'Forecast', 'Year': 'Year'}).assign(Model='LSTM')
+    ])
+
+    comparison_chart = alt.Chart(comparison_data).mark_line().encode(
+        x=alt.X('Year:O', title='Year'),
+        y=alt.Y('Forecast:Q', title='Forecasted General Index'),
+        color='Model:N',
+        tooltip=['Year:O', 'Model:N', 'Forecast:Q']
+    ).properties(
+        width=700,
+        height=400
+    )
+    st.altair_chart(comparison_chart)
+
+    # Ensure the plots and metrics are displayed properly
+    st.subheader('Forecast Data')
+    st.write("Forecasted General Index using SARIMA:")
+    st.dataframe(forecast_data_sarima)
+
+    st.write("Forecasted General Index using LSTM:")
+    st.dataframe(forecast_data_lstm)
+
 elif option == "About Us":
     st.markdown('<div class="title">About Us</div>', unsafe_allow_html=True)
     st.markdown("""
