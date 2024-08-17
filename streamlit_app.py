@@ -57,41 +57,39 @@ st.markdown(f"""
         justify-content: center;
         margin-bottom: 20px;
     }}
-    .nav input[type="radio"] {{
-        display: none;
-    }}
-    .nav label {{
+    .nav button {{
         background-color: #4CAF50;
         color: white;
         padding: 10px 20px;
+        border: none;
         border-radius: 5px;
         cursor: pointer;
         margin: 0 5px;
         text-align: center;
     }}
-    .nav input[type="radio"]:checked + label {{
+    .nav button.active {{
         background-color: #333;
     }}
     </style>
 """, unsafe_allow_html=True)
 
 # Page navigation
+page = st.session_state.get('page', 'Home')
 
-# Page navigation buttons
+def update_page(page_name):
+    st.session_state['page'] = page_name
+
 st.markdown('<div class="nav">', unsafe_allow_html=True)
-about_us = st.button("About Us")
-home = st.button("Home")
-contact_us = st.button("Contact Us")
+if st.button('About Us', key='about_us'):
+    update_page('About Us')
+if st.button('Home', key='home'):
+    update_page('Home')
+if st.button('Contact Us', key='contact_us'):
+    update_page('Contact Us')
 st.markdown('</div>', unsafe_allow_html=True)
 
-if about_us:
+if page == "About Us":
     st.markdown('<div class="title">About Us</div>', unsafe_allow_html=True)
-    st.markdown("""
-    <!-- Your About Us content here -->
-    """, unsafe_allow_html=True)
-
-elif home:
-    st.markdown('<div class="title">General Index Forecasting using LSTM and SARIMA</div>', unsafe_allow_html=True)
     
     st.markdown("""
     <div style='font-size: 22px; line-height: 1.6; color: #333; background-color: rgba(255, 255, 255, 0.9); padding: 15px; border-radius: 8px;'>
@@ -204,164 +202,92 @@ elif page == "Home":
     model.compile(optimizer='adam', loss='mean_squared_error')
     
     # Train the model
-    st.subheader('Training LSTM Model...')
-    model.fit(X_train, Y_train, epochs=100, batch_size=32, validation_data=(X_test, Y_test), verbose=1)
+    history = model.fit(X_train, Y_train, epochs=20, batch_size=32, validation_data=(X_test, Y_test), verbose=1)
     
-    # Predicting the next 60 months (5 years) using LSTM
-    forecast_steps = 60
-    future_predictions_lstm = []
+    # Make predictions
+    predictions = model.predict(X_test)
     
-    current_input_lstm = X_test[-1].reshape(1, time_step, 1)
-    for _ in range(forecast_steps):
-        future_pred_lstm = model.predict(current_input_lstm)
-        future_predictions_lstm.append(future_pred_lstm[0, 0])
-        current_input_lstm = np.append(current_input_lstm[:, 1:, :], future_pred_lstm.reshape(1, 1, 1), axis=1)
+    # Inverse transform the predictions and actual values
+    predictions = scaler.inverse_transform(np.concatenate((predictions, np.zeros((predictions.shape[0], data.shape[1]-1))), axis=1))[:,0]
+    Y_test_inv = scaler.inverse_transform(np.concatenate((Y_test.reshape(-1, 1), np.zeros((Y_test.shape[0], data.shape[1]-1))), axis=1))[:,0]
     
-    future_dates_lstm = pd.date_range(data.index[-1] + pd.DateOffset(months=1), periods=forecast_steps, freq='M')
-    future_predictions_lstm_inv = scaler.inverse_transform(np.array(future_predictions_lstm).reshape(-1, 1))
+    # Plot the predictions
+    st.subheader('LSTM Model Predictions vs Actual Values')
+    predictions_df = pd.DataFrame({
+        'Date': data.index[-len(predictions):],
+        'Actual': Y_test_inv,
+        'Predicted': predictions
+    })
     
-    # Define the SARIMA model
-    sarima_model = SARIMAX(data['General index'], 
-                           order=(1, 1, 1),  # ARIMA parameters (p, d, q)
-                           seasonal_order=(1, 1, 1, 12),  # Seasonal parameters (P, D, Q, s)
-                           enforce_stationarity=False,
-                           enforce_invertibility=False)
+    chart = alt.Chart(predictions_df).mark_line().encode(
+        x='Date:T',
+        y='Actual:Q',
+        color=alt.value('red')
+    ).properties(
+        width=700,
+        height=400
+    )
     
-    # Fit the model
-    sarima_results = sarima_model.fit(disp=False)
+    predicted_line = alt.Chart(predictions_df).mark_line().encode(
+        x='Date:T',
+        y='Predicted:Q',
+        color=alt.value('blue')
+    )
     
-    # Forecasting the next 60 months (5 years) using SARIMA
-    forecast_sarima = sarima_results.get_forecast(steps=forecast_steps)
-    forecast_index_sarima = pd.date_range(start=data.index[-1] + pd.DateOffset(months=1), periods=forecast_steps, freq='M')
-    forecast_mean_sarima = forecast_sarima.predicted_mean
-    forecast_conf_int_sarima = forecast_sarima.conf_int()
+    st.altair_chart(chart + predicted_line)
     
-    # Dummy future actual values for comparison (Replace with actual future values if available)
-    dummy_future_actual = np.random.rand(forecast_steps)  # Replace with actual future values
-    
-    # Convert predictions to binary (using a threshold)
-    threshold = 0.5
-    lstm_binary_preds = (future_predictions_lstm_inv.flatten() >= threshold).astype(int)
-    sarima_binary_preds = (forecast_mean_sarima >= threshold).astype(int)
-    dummy_binary_actual = (dummy_future_actual >= threshold).astype(int)
-    
-    # Evaluate SARIMA
-    precision_sarima = precision_score(dummy_binary_actual, sarima_binary_preds)
-    recall_sarima = recall_score(dummy_binary_actual, sarima_binary_preds)
-    f1_sarima = f1_score(dummy_binary_actual, sarima_binary_preds)
-    accuracy_sarima = accuracy_score(dummy_binary_actual, sarima_binary_preds)
-    mse_sarima = mean_squared_error(dummy_future_actual, forecast_mean_sarima)
-    rmse_sarima = np.sqrt(mse_sarima)
-    
-    # Evaluate LSTM
-    precision_lstm = precision_score(dummy_binary_actual, lstm_binary_preds)
-    recall_lstm = recall_score(dummy_binary_actual, lstm_binary_preds)
-    f1_lstm = f1_score(dummy_binary_actual, lstm_binary_preds)
-    accuracy_lstm = accuracy_score(dummy_binary_actual, lstm_binary_preds)
-    mse_lstm = mean_squared_error(dummy_future_actual, future_predictions_lstm_inv.flatten())
-    rmse_lstm = np.sqrt(mse_lstm)
-    
+    # Model evaluation
     st.subheader('Model Evaluation Metrics')
-    st.write(f"<div class='metric'>SARIMA - Precision: {precision_sarima}, Recall: {recall_sarima}, F1 Score: {f1_sarima}, Accuracy: {accuracy_sarima}, MSE: {mse_sarima}, RMSE: {rmse_sarima}</div>", unsafe_allow_html=True)
-    st.write(f"<div class='metric'>LSTM - Precision: {precision_lstm}, Recall: {recall_lstm}, F1 Score: {f1_lstm}, Accuracy: {accuracy_lstm}, MSE: {mse_lstm}, RMSE: {rmse_lstm}</div>", unsafe_allow_html=True)
+    mse = mean_squared_error(Y_test_inv, predictions)
+    mae = mean_absolute_error(Y_test_inv, predictions)
     
-    # Prepare data for plotting SARIMA and LSTM forecasts
-    forecast_data_sarima = pd.DataFrame({
-        'Date': forecast_index_sarima,
-        'Year': forecast_index_sarima.year,
-        'Forecasted General Index (SARIMA)': forecast_mean_sarima
-    })
+    st.markdown(f"""
+    **Mean Squared Error (MSE):** {mse:.2f}
+    **Mean Absolute Error (MAE):** {mae:.2f}
+    """)
     
-    forecast_data_lstm = pd.DataFrame({
-        'Date': future_dates_lstm,
-        'Year': future_dates_lstm.year,
-        'Forecasted General Index (LSTM)': future_predictions_lstm_inv.flatten()
-    })
-    
-    # Separate Plotting for SARIMA
-    st.subheader('SARIMA Forecast')
-    sarima_chart = alt.Chart(forecast_data_sarima).mark_line(color='blue').encode(
-        x=alt.X('Year:O', title='Year'),
-        y='Forecasted General Index (SARIMA):Q',
-        tooltip=['Year:O', 'Forecasted General Index (SARIMA):Q']
-    ).properties(
-        width=700,
-        height=400
-    )
-    st.altair_chart(sarima_chart)
-    
-    # Separate Plotting for LSTM
-    st.subheader('LSTM Forecast')
-    lstm_chart = alt.Chart(forecast_data_lstm).mark_line(color='green').encode(
-        x=alt.X('Year:O', title='Year'),
-        y='Forecasted General Index (LSTM):Q',
-        tooltip=['Year:O', 'Forecasted General Index (LSTM):Q']
-    ).properties(
-        width=700,
-        height=400
-    )
-    st.altair_chart(lstm_chart)
-    
-    # Comparison of forecasts
-    comparison_data = pd.concat([
-        forecast_data_sarima[['Year', 'Forecasted General Index (SARIMA)']].rename(columns={'Forecasted General Index (SARIMA)': 'Forecast', 'Year': 'Year'}).assign(Model='SARIMA'),
-        forecast_data_lstm[['Year', 'Forecasted General Index (LSTM)']].rename(columns={'Forecasted General Index (LSTM)': 'Forecast', 'Year': 'Year'}).assign(Model='LSTM')
-    ])
-    
-    comparison_chart = alt.Chart(comparison_data).mark_line().encode(
-        x=alt.X('Year:O', title='Year'),
-        y=alt.Y('Forecast:Q', title='Forecasted General Index'),
-        color='Model:N',
-        tooltip=['Year:O', 'Model:N', 'Forecast:Q']
-    ).properties(
-        width=700,
-        height=400
-    )
-    st.altair_chart(comparison_chart)
-    
-    # Ensure the plots and metrics are displayed properly
-    st.subheader('Forecast Data')
-    st.write("Forecasted General Index using SARIMA:")
-    st.dataframe(forecast_data_sarima)
-    
-    st.write("Forecasted General Index using LSTM:")
-    st.dataframe(forecast_data_lstm)
-
 elif page == "Contact Us":
     st.markdown('<div class="title">Contact Us</div>', unsafe_allow_html=True)
     
     st.markdown("""
     <div style='font-size: 22px; line-height: 1.6; color: #333; background-color: rgba(255, 255, 255, 0.9); padding: 15px; border-radius: 8px;'>
-    <h2 style='font-size: 32px; color: #4CAF50;'>We'd Love to Hear from You!</h2>
+    <h2 style='font-size: 28px; color: #4CAF50;'>Get in Touch</h2>
 
-    Whether you have questions, feedback, or are interested in our services, please don't hesitate to reach out to us. We're here to help!
+    We would love to hear from you! Whether you have questions, feedback, or collaboration opportunities, feel free to reach out to us.
 
-    <h3 style='font-size: 26px; color: #2196F3;'>Contact Information:</h3>
+    <h3 style='font-size: 22px; color: #2196F3;'>Contact Information:</h3>
+    <p><strong>Email:</strong> <a href="mailto:contact@forecasting.com" style="color: #2196F3;">contact@forecasting.com</a></p>
+    <p><strong>Phone:</strong> +1-234-567-890</p>
+
+    <h3 style='font-size: 22px; color: #2196F3;'>Follow Us:</h3>
+    <p>Stay connected with us on social media for the latest updates and insights:</p>
     <ul style='font-size: 20px;'>
-    <li><strong>Email:</strong> <a href="mailto:example@example.com" style="color: #4CAF50;">example@example.com</a></li>
-    <li><strong>Phone:</strong> +1-234-567-890</li>
-    <li><strong>Address:</strong> 123 Data Street, Analytics City, DataLand</li>
+    <li><a href="https://twitter.com/forecasting" style="color: #2196F3;">Twitter</a></li>
+    <li><a href="https://facebook.com/forecasting" style="color: #2196F3;">Facebook</a></li>
+    <li><a href="https://linkedin.com/company/forecasting" style="color: #2196F3;">LinkedIn</a></li>
     </ul>
 
-    <h3 style='font-size: 26px; color: #2196F3;'>Business Hours:</h3>
-    <ul style='font-size: 20px;'>
-    <li><strong>Monday to Friday:</strong> 9:00 AM - 6:00 PM (EST)</li>
-    <li><strong>Saturday:</strong> 10:00 AM - 4:00 PM (EST)</li>
-    <li><strong>Sunday:</strong> Closed</li>
-    </ul>
+    <h3 style='font-size: 22px; color: #2196F3;'>Office Address:</h3>
+    <p>
+    General Index Forecasting<br>
+    123 Data Street,<br>
+    Suite 456,<br>
+    City, State, ZIP Code,<br>
+    Country
+    </p>
 
-    <h3 style='font-size: 26px; color: #2196F3;'>Follow Us:</h3>
-    <ul style='font-size: 20px;'>
-    <li><a href="https://www.linkedin.com/company/example" style="color: #4CAF50;">LinkedIn</a></li>
-    <li><a href="https://twitter.com/example" style="color: #4CAF50;">Twitter</a></li>
-    <li><a href="https://facebook.com/example" style="color: #4CAF50;">Facebook</a></li>
-    </ul>
+    <h3 style='font-size: 22px; color: #2196F3;'>Feedback Form:</h3>
+    <p>We appreciate your feedback. Please fill out the form below:</p>
+    
+    <form action="https://example.com/feedback" method="post">
+        <label for="name">Name:</label><br>
+        <input type="text" id="name" name="name" required><br>
+        <label for="email">Email:</label><br>
+        <input type="email" id="email" name="email" required><br>
+        <label for="message">Message:</label><br>
+        <textarea id="message" name="message" rows="4" required></textarea><br>
+        <input type="submit" value="Submit">
+    </form>
 
-    <h3 style='font-size: 26px; color: #2196F3;'>Get In Touch:</h3>
-    If you have any inquiries or would like to discuss potential projects, please fill out the contact form below or use the contact details provided.
-
-    <p style='font-size: 20px;'>**Contact Form:** (You may integrate a contact form here if desired.)</p>
-
-    Thank you for your interest in connecting with us!
     </div>
     """, unsafe_allow_html=True)
