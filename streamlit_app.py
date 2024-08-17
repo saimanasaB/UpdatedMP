@@ -429,7 +429,7 @@ elif page == "Contact Us":
     <h3 style='font-size: 26px; color: #2196F3;'>Get In Touch:</h3>
     If you have any inquiries or would like to discuss potential projects, please fill out the contact form below or use the contact details provided.
     <h3 style='font-size: 22px; color: #2196F3;'>Feedback Form:</h3>
-    <p>We appreciate your feedback. Please fill out the form below:</p>
+    <p>We appreciate your feedback. Please fill out the form below:</p><br><br>
     
     <form action="https://example.com/feedback" method="post">
         <label for="name">Name:</label><br>
