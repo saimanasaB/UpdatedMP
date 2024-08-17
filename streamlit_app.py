@@ -20,7 +20,10 @@ image_path = "inflation3.jpg"
 # Convert the image to a Base64 string
 img_base64 = get_base64_of_image(image_path)
 
-# Create the CSS with the Base64 encoded image
+# Radio button for navigation
+option = st.radio('Choose a page', ['Home', 'About Us', 'Contact Us'])
+
+# Styles for the app
 st.markdown(f"""
     <style>
     .main {{
@@ -34,7 +37,7 @@ st.markdown(f"""
         color: #4CAF50;
         text-align: center;
         padding: 10px;
-        background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent background for readability */
+        background-color: rgba(255, 255, 255, 0.8);
     }}
     .subheader {{
         font-size: 24px;
@@ -52,115 +55,17 @@ st.markdown(f"""
         padding: 5px;
         border-radius: 5px;
     }}
-    .about {{
+    .about, .contact {{
         font-size: 18px;
         color: #333;
         background-color: rgba(255, 255, 255, 0.8);
         padding: 15px;
         border-radius: 5px;
     }}
-    .nav-buttons {{
-        display: flex;
-        justify-content: center;
-        margin-top: 20px;
-    }}
-    </style>
-""", unsafe_allow_html=True)
-import streamlit as st
-
-# Radio button for navigation
-option = st.radio('Choose a page', ['Home', 'About Us', 'Contact Us'])
-
-# Styles for the app
-st.markdown("""
-    <style>
-    .main {
-        background-image: url("data:image/jpg;base64,{img_base64}");
-        background-size: cover;
-        background-position: center;
-        color: #333;
-    }
-    .title {
-        font-size: 36px;
-        color: #4CAF50;
-        text-align: center;
-        padding: 10px;
-        background-color: rgba(255, 255, 255, 0.8);
-    }
-    .subheader {
-        font-size: 24px;
-        color: #2196F3;
-        margin-top: 20px;
-        margin-bottom: 10px;
-        background-color: rgba(255, 255, 255, 0.8);
-        padding: 5px;
-    }
-    .metric {
-        font-size: 18px;
-        font-weight: bold;
-        color: #FF5722;
-        background-color: rgba(255, 255, 255, 0.8);
-        padding: 5px;
-        border-radius: 5px;
-    }
-    .about {
-        font-size: 18px;
-        color: #333;
-        background-color: rgba(255, 255, 255, 0.8);
-        padding: 15px;
-        border-radius: 5px;
-    }
-    .contact {
-        font-size: 18px;
-        color: #333;
-        background-color: rgba(255, 255, 255, 0.8);
-        padding: 15px;
-        border-radius: 5px;
-    }
     </style>
 """, unsafe_allow_html=True)
 
 # Conditional rendering based on the selected option
-if option == "Home":
-    # Your existing Home page code here
-    # ...
-
-elif option == "About Us":
-    st.markdown('<div class="title">About Us</div>', unsafe_allow_html=True)
-    st.markdown("""
-    <div class='about'>
-    <h2>Welcome to Our Forecasting App!</h2>
-    <p>Our app provides insights into forecasting economic indices using advanced machine learning models. We leverage the power of Long Short-Term Memory (LSTM) networks and Seasonal Autoregressive Integrated Moving Average (SARIMA) models to deliver accurate forecasts and valuable metrics.</p>
-    <p><strong>Mission:</strong> To enhance decision-making with data-driven insights and advanced forecasting techniques.</p>
-    <p><strong>Vision:</strong> To be at the forefront of predictive analytics and contribute to solving real-world problems through innovative technologies.</p>
-    <p>Feel free to explore the "Home" page to see our forecasting models in action and the "About Us" page to learn more about our mission and vision.</p>
-    <p>Thank you for visiting!</p>
-    </div>
-    """, unsafe_allow_html=True)
-
-elif option == "Contact Us":
-    st.markdown('<div class="title">Contact Us</div>', unsafe_allow_html=True)
-    st.markdown("""
-    <div class='contact'>
-    <h2>Get in Touch</h2>
-    <p>We would love to hear from you! Please use the form below to reach out with any questions, feedback, or inquiries.</p>
-    <form action="mailto:your-email@example.com" method="post" enctype="text/plain">
-        <label for="name">Name:</label><br>
-        <input type="text" id="name" name="name" required><br><br>
-        <label for="email">Email:</label><br>
-        <input type="email" id="email" name="email" required><br><br>
-        <label for="message">Message:</label><br>
-        <textarea id="message" name="message" rows="5" required></textarea><br><br>
-        <input type="submit" value="Send">
-    </form>
-    <p>If you prefer, you can also reach us at <a href="mailto:your-email@example.com">your-email@example.com</a>.</p>
-    </div>
-    """, unsafe_allow_html=True)
-
-
-# Radio buttons for navigation
-option = st.radio("Select Page", ["Home", "About Us"], index=0, horizontal=True)
-
 if option == "Home":
     # Streamlit App Title
     st.markdown('<div class="title">General Index Forecasting using LSTM and SARIMA</div>', unsafe_allow_html=True)
@@ -287,74 +192,73 @@ if option == "Home":
     recall_lstm = recall_score(dummy_binary_actual, lstm_binary_preds)
     f1_lstm = f1_score(dummy_binary_actual, lstm_binary_preds)
     accuracy_lstm = accuracy_score(dummy_binary_actual, lstm_binary_preds)
-    mse_lstm = mean_squared_error(dummy_binary_actual, future_predictions_lstm_inv.flatten())
+    mse_lstm = mean_squared_error(dummy_future_actual, future_predictions_lstm_inv.flatten())
     rmse_lstm = np.sqrt(mse_lstm)
 
     st.subheader('Model Evaluation Metrics')
     st.write(f"<div class='metric'>SARIMA - Precision: {precision_sarima:.2f}, Recall: {recall_sarima:.2f}, F1 Score: {f1_sarima:.2f}, Accuracy: {accuracy_sarima:.2f}, MSE: {mse_sarima:.2f}, RMSE: {rmse_sarima:.2f}</div>", unsafe_allow_html=True)
     st.write(f"<div class='metric'>LSTM - Precision: {precision_lstm:.2f}, Recall: {recall_lstm:.2f}, F1 Score: {f1_lstm:.2f}, Accuracy: {accuracy_lstm:.2f}, MSE: {mse_lstm:.2f}, RMSE: {rmse_lstm:.2f}</div>", unsafe_allow_html=True)
 
-    # Prepare data for plotting SARIMA and LSTM forecasts
-    forecast_data_sarima = pd.DataFrame({
+    # Create the forecast plot for SARIMA
+    forecast_df_sarima = pd.DataFrame({
         'Date': forecast_index_sarima,
-        'Year': forecast_index_sarima.year,
-        'Forecasted General Index (SARIMA)': forecast_mean_sarima
+        'Forecast': forecast_mean_sarima,
+        'Lower Bound': forecast_conf_int_sarima.iloc[:, 0],
+        'Upper Bound': forecast_conf_int_sarima.iloc[:, 1]
     })
 
-    forecast_data_lstm = pd.DataFrame({
-        'Date': future_dates_lstm,
-        'Year': future_dates_lstm.year,
-        'Forecasted General Index (LSTM)': future_predictions_lstm_inv.flatten()
-    })
+    forecast_chart_sarima = alt.Chart(forecast_df_sarima).mark_line(color='blue').encode(
+        x='Date:T',
+        y='Forecast:Q'
+    ).properties(
+        width=700,
+        height=400
+    ).interactive()
 
-    # Separate Plotting for SARIMA
+    forecast_chart_sarima = forecast_chart_sarima + alt.Chart(forecast_df_sarima).mark_errorband(opacity=0.2).encode(
+        x='Date:T',
+        y='lower_bound:Q',
+        y2='upper_bound:Q'
+    )
+
     st.subheader('SARIMA Forecast')
-    sarima_chart = alt.Chart(forecast_data_sarima).mark_line(color='blue').encode(
-        x=alt.X('Year:O', title='Year'),
-        y='Forecasted General Index (SARIMA):Q',
-        tooltip=['Year:O', 'Forecasted General Index (SARIMA):Q']
+    st.altair_chart(forecast_chart_sarima)
+
+    # Create the forecast plot for LSTM
+    forecast_df_lstm = pd.DataFrame({
+        'Date': future_dates_lstm,
+        'Forecast': future_predictions_lstm_inv.flatten()
+    })
+
+    forecast_chart_lstm = alt.Chart(forecast_df_lstm).mark_line(color='green').encode(
+        x='Date:T',
+        y='Forecast:Q'
     ).properties(
         width=700,
         height=400
-    )
-    st.altair_chart(sarima_chart)
+    ).interactive()
 
-    # Separate Plotting for LSTM
     st.subheader('LSTM Forecast')
-    lstm_chart = alt.Chart(forecast_data_lstm).mark_line(color='green').encode(
-        x=alt.X('Year:O', title='Year'),
-        y='Forecasted General Index (LSTM):Q',
-        tooltip=['Year:O', 'Forecasted General Index (LSTM):Q']
+    st.altair_chart(forecast_chart_lstm)
+
+    # Comparison Plot
+    combined_forecast_df = pd.DataFrame({
+        'Date': pd.concat([forecast_df_sarima['Date'], forecast_df_lstm['Date']]),
+        'Forecast': pd.concat([forecast_df_sarima['Forecast'], forecast_df_lstm['Forecast']]),
+        'Model': ['SARIMA']*len(forecast_df_sarima) + ['LSTM']*len(forecast_df_lstm)
+    })
+
+    comparison_chart = alt.Chart(combined_forecast_df).mark_line().encode(
+        x='Date:T',
+        y='Forecast:Q',
+        color='Model:N'
     ).properties(
         width=700,
         height=400
-    )
-    st.altair_chart(lstm_chart)
+    ).interactive()
 
-    # Comparison of forecasts
-    comparison_data = pd.concat([
-        forecast_data_sarima[['Year', 'Forecasted General Index (SARIMA)']].rename(columns={'Forecasted General Index (SARIMA)': 'Forecast', 'Year': 'Year'}).assign(Model='SARIMA'),
-        forecast_data_lstm[['Year', 'Forecasted General Index (LSTM)']].rename(columns={'Forecasted General Index (LSTM)': 'Forecast', 'Year': 'Year'}).assign(Model='LSTM')
-    ])
-
-    comparison_chart = alt.Chart(comparison_data).mark_line().encode(
-        x=alt.X('Year:O', title='Year'),
-        y=alt.Y('Forecast:Q', title='Forecasted General Index'),
-        color='Model:N',
-        tooltip=['Year:O', 'Model:N', 'Forecast:Q']
-    ).properties(
-        width=700,
-        height=400
-    )
+    st.subheader('Comparison of SARIMA and LSTM Forecasts')
     st.altair_chart(comparison_chart)
-
-    # Ensure the plots and metrics are displayed properly
-    st.subheader('Forecast Data')
-    st.write("Forecasted General Index using SARIMA:")
-    st.dataframe(forecast_data_sarima)
-
-    st.write("Forecasted General Index using LSTM:")
-    st.dataframe(forecast_data_lstm)
 
 elif option == "About Us":
     st.markdown('<div class="title">About Us</div>', unsafe_allow_html=True)
@@ -366,5 +270,24 @@ elif option == "About Us":
     <p><strong>Vision:</strong> To be at the forefront of predictive analytics and contribute to solving real-world problems through innovative technologies.</p>
     <p>Feel free to explore the "Home" page to see our forecasting models in action and the "About Us" page to learn more about our mission and vision.</p>
     <p>Thank you for visiting!</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+elif option == "Contact Us":
+    st.markdown('<div class="title">Contact Us</div>', unsafe_allow_html=True)
+    st.markdown("""
+    <div class='contact'>
+    <h2>Get in Touch</h2>
+    <p>We would love to hear from you! Please use the form below to reach out with any questions, feedback, or inquiries.</p>
+    <form action="mailto:your-email@example.com" method="post" enctype="text/plain">
+        <label for="name">Name:</label><br>
+        <input type="text" id="name" name="name" required><br><br>
+        <label for="email">Email:</label><br>
+        <input type="email" id="email" name="email" required><br><br>
+        <label for="message">Message:</label><br>
+        <textarea id="message" name="message" rows="5" required></textarea><br><br>
+        <input type="submit" value="Send">
+    </form>
+    <p>If you prefer, you can also reach us at <a href="mailto:your-email@example.com">your-email@example.com</a>.</p>
     </div>
     """, unsafe_allow_html=True)
