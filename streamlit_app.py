@@ -408,21 +408,21 @@ elif page == "Contact Us":
 
     <h3 style='font-size: 26px; color: #2196F3;'>Contact Information:</h3>
     <ul style='font-size: 20px;'>
-    <li><strong>Email:</strong> <a href="mailto:example@example.com" style="color: #4CAF50;">example@example.com</a></li>
-    <li><strong>Phone:</strong> +1-234-567-890</li>
+    <li><strong>Email:</strong> <a href="mailto:kimsai@gmail.com" style="color: #4CAF50;">kimsai@gmail.com</a></li>
+    <li><strong>Phone:</strong> +91-948-678-890</li>
     <li><strong>Address:</strong> 123 Data Street, Analytics City, DataLand</li>
     </ul>
 
     <h3 style='font-size: 26px; color: #2196F3;'>Business Hours:</h3>
     <ul style='font-size: 20px;'>
-    <li><strong>Monday to Friday:</strong> 9:00 AM - 6:00 PM (EST)</li>
-    <li><strong>Saturday:</strong> 10:00 AM - 4:00 PM (EST)</li>
+    <li><strong>Monday to Friday:</strong> 9:00 AM - 6:00 PM (IST)</li>
+    <li><strong>Saturday:</strong> 10:00 AM - 4:00 PM (IST)</li>
     <li><strong>Sunday:</strong> Closed</li>
     </ul>
 
     <h3 style='font-size: 26px; color: #2196F3;'>Follow Us:</h3>
     <ul style='font-size: 20px;'>
-    <li><a href="https://www.linkedin.com/company/example" style="color: #4CAF50;">LinkedIn</a></li>
+    <li><a href="https://www.linkedin.com/in/sai-manasa-b-1765b420b/" style="color: #4CAF50;">LinkedIn</a></li>
     <li><a href="https://twitter.com/example" style="color: #4CAF50;">Twitter</a></li>
     <li><a href="https://facebook.com/example" style="color: #4CAF50;">Facebook</a></li>
     </ul>
