@@ -313,36 +313,42 @@ elif page == "Home":
     
     st.write("Forecasted General Index using LSTM:")
     st.dataframe(forecast_data_lstm)
+
 elif page == "Contact Us":
     st.markdown('<div class="title">Contact Us</div>', unsafe_allow_html=True)
     
-    st.write("""
-    **We'd Love to Hear from You!**
+    st.markdown("""
+    <div style='font-size: 22px; line-height: 1.6; color: #333; background-color: rgba(255, 255, 255, 0.9); padding: 15px; border-radius: 8px;'>
+    <h2 style='font-size: 32px; color: #4CAF50;'>We'd Love to Hear from You!</h2>
 
     Whether you have questions, feedback, or are interested in our services, please don't hesitate to reach out to us. We're here to help!
 
-    **Contact Information:**
+    <h3 style='font-size: 26px; color: #2196F3;'>Contact Information:</h3>
+    <ul style='font-size: 20px;'>
+    <li><strong>Email:</strong> <a href="mailto:example@example.com" style="color: #4CAF50;">example@example.com</a></li>
+    <li><strong>Phone:</strong> +1-234-567-890</li>
+    <li><strong>Address:</strong> 123 Data Street, Analytics City, DataLand</li>
+    </ul>
 
-    - **Email:** [example@example.com](mailto:example@example.com)
-    - **Phone:** +1-234-567-890
-    - **Address:** 123 Data Street, Analytics City, DataLand
+    <h3 style='font-size: 26px; color: #2196F3;'>Business Hours:</h3>
+    <ul style='font-size: 20px;'>
+    <li><strong>Monday to Friday:</strong> 9:00 AM - 6:00 PM (EST)</li>
+    <li><strong>Saturday:</strong> 10:00 AM - 4:00 PM (EST)</li>
+    <li><strong>Sunday:</strong> Closed</li>
+    </ul>
 
-    **Business Hours:**
-    - Monday to Friday: 9:00 AM - 6:00 PM (EST)
-    - Saturday: 10:00 AM - 4:00 PM (EST)
-    - Sunday: Closed
+    <h3 style='font-size: 26px; color: #2196F3;'>Follow Us:</h3>
+    <ul style='font-size: 20px;'>
+    <li><a href="https://www.linkedin.com/company/example" style="color: #4CAF50;">LinkedIn</a></li>
+    <li><a href="https://twitter.com/example" style="color: #4CAF50;">Twitter</a></li>
+    <li><a href="https://facebook.com/example" style="color: #4CAF50;">Facebook</a></li>
+    </ul>
 
-    **Follow Us:**
-    - [LinkedIn](https://www.linkedin.com/company/example)
-    - [Twitter](https://twitter.com/example)
-    - [Facebook](https://facebook.com/example)
-
-    **Get In Touch:**
+    <h3 style='font-size: 26px; color: #2196F3;'>Get In Touch:</h3>
     If you have any inquiries or would like to discuss potential projects, please fill out the contact form below or use the contact details provided.
 
-    **Contact Form:**
-    (You may integrate a contact form here if desired.)
+    <p style='font-size: 20px;'>**Contact Form:** (You may integrate a contact form here if desired.)</p>
 
     Thank you for your interest in connecting with us!
-    """)
-
+    </div>
+    """, unsafe_allow_html=True)
