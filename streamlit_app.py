@@ -56,7 +56,7 @@ st.markdown(f"""
         display: flex;
         justify-content: center;
         margin-bottom: 20px;
-        flex-direction: row;
+        padding: 0;
     }}
     .nav button {{
         background-color: #4CAF50;
@@ -67,6 +67,8 @@ st.markdown(f"""
         cursor: pointer;
         margin: 0 5px;
         text-align: center;
+        flex: 1; /* Ensure buttons take equal space */
+        font-size: 16px; /* Adjust font size */
     }}
     .nav button.active {{
         background-color: #333;
