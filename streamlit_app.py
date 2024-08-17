@@ -7,66 +7,61 @@ from sklearn.metrics import mean_squared_error, mean_absolute_error, precision_s
 from statsmodels.tsa.statespace.sarimax import SARIMAX
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import LSTM, Dense, Dropout
-st.markdown("""
+
+import base64
+
+# Function to encode the image file to base64
+def get_base64_of_image(image_file):
+    with open(image_file, 'rb') as img:
+        return base64.b64encode(img.read()).decode()
+
+# Path to your image file
+image_path = "inflation.jpg"
+
+# Convert the image to a Base64 string
+img_base64 = get_base64_of_image(image_path)
+
+# Create the CSS with the Base64 encoded image
+st.markdown(f"""
     <style>
-    .main { 
-        background-image: url('https://images.app.goo.gl/9ZEtZ6XoZ8AM9tiH6');
+    .main {{
+        background-image: url("data:image/jpg;base64,{img_base64}");
         background-size: cover;
         background-position: center;
         color: #333;
-    }
-    .title {
+    }}
+    .title {{
         font-size: 36px;
         color: #4CAF50;
         text-align: center;
         padding: 10px;
         background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent background for readability */
-    }
-    .subheader {
+    }}
+    .subheader {{
         font-size: 24px;
         color: #2196F3;
         margin-top: 20px;
         margin-bottom: 10px;
         background-color: rgba(255, 255, 255, 0.8);
         padding: 5px;
-    }
-    .metric {
+    }}
+    .metric {{
         font-size: 18px;
         font-weight: bold;
         color: #FF5722;
         background-color: rgba(255, 255, 255, 0.8);
         padding: 5px;
         border-radius: 5px;
-    }
+    }}
     </style>
 """, unsafe_allow_html=True)
 
-# Front-end styling with custom CSS
-st.markdown("""
-    <style>
-    .main { 
-        background-color: #f5f5f5; 
-        color: #333;
-    }
-    .title {
-        font-size: 36px;
-        color: #4CAF50;
-        text-align: center;
-        padding: 10px;
-    }
-    .subheader {
-        font-size: 24px;
-        color: #2196F3;
-        margin-top: 20px;
-        margin-bottom: 10px;
-    }
-    .metric {
-        font-size: 18px;
-        font-weight: bold;
-        color: #FF5722;
-    }
-    </style>
-""", unsafe_allow_html=True)
+# Streamlit App Title
+st.markdown('<div class="title">General Index Forecasting using LSTM and SARIMA</div>', unsafe_allow_html=True)
+
+# The rest of your app code goes here...
+
+st.write("The rest of your Streamlit app content goes here.")
 
 # Streamlit App Title
 st.markdown('<div class="title">General Index Forecasting using LSTM and SARIMA</div>', unsafe_allow_html=True)
