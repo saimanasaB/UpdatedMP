@@ -57,10 +57,6 @@ st.markdown(f"""
 """, unsafe_allow_html=True)
 
 
-# The rest of your app code goes here...
-
-st.write("The rest of your Streamlit app content goes here.")
-
 # Streamlit App Title
 st.markdown('<div class="title">General Index Forecasting using LSTM and SARIMA</div>', unsafe_allow_html=True)
 
