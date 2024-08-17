@@ -7,280 +7,246 @@ from sklearn.metrics import mean_squared_error, mean_absolute_error, precision_s
 from statsmodels.tsa.statespace.sarimax import SARIMAX
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import LSTM, Dense, Dropout
+
 import base64
 
-def image_to_base64(image_path):
-    with open(image_path, "rb") as image_file:
-        return base64.b64encode(image_file.read()).decode('utf-8')
+# Function to encode the image file to base64
+def get_base64_of_image(image_file):
+    with open(image_file, 'rb') as img:
+        return base64.b64encode(img.read()).decode()
 
-# Convert image
-img_base64 = image_to_base64("inflation3.jpg")  # Update with the path to your image file
-print(img_base64)  # Print the base64 string to use in the code
+# Path to your image file
+image_path = "inflation3.jpg"
 
+# Convert the image to a Base64 string
+img_base64 = get_base64_of_image(image_path)
 
-# Front-end styling with custom CSS
-st.markdown("""
+# Create the CSS with the Base64 encoded image
+st.markdown(f"""
     <style>
-    .main { 
-        background-color: #f5f5f5; 
-        color: #333;
+    .main {{
         background-image: url("data:image/jpg;base64,{img_base64}");
         background-size: cover;
-    }
-    .title {
+        background-position: center;
+        color: #333;
+    }}
+    .title {{
         font-size: 36px;
         color: #4CAF50;
         text-align: center;
         padding: 10px;
-    }
-    .subheader {
+        background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent background for readability */
+    }}
+    .subheader {{
         font-size: 24px;
         color: #2196F3;
         margin-top: 20px;
         margin-bottom: 10px;
-    }
-    .metric {
+        background-color: rgba(255, 255, 255, 0.8);
+        padding: 5px;
+    }}
+    .metric {{
         font-size: 18px;
         font-weight: bold;
         color: #FF5722;
-    }
-    .nav-button {
-        background-color: #4CAF50;
-        color: white;
-        padding: 10px 20px;
-        text-align: center;
-        text-decoration: none;
-        display: inline-block;
-        font-size: 16px;
-        margin: 4px 2px;
-        cursor: pointer;
-        border: none;
-    }
+        background-color: rgba(255, 255, 255, 0.8);
+        padding: 5px;
+        border-radius: 5px;
+    }}
     </style>
 """, unsafe_allow_html=True)
+
 
 # Streamlit App Title
 st.markdown('<div class="title">General Index Forecasting using LSTM and SARIMA</div>', unsafe_allow_html=True)
 
-# Navigation
-page = st.selectbox('Select Page', ['Data Preview', 'Forecast and Model Evaluation'])
+# Load the dataset
+file_path = st.text_input('Enter file path of cleaned data (e.g., cleaned_data.csv)', 'cleaned_data.csv')
+data = pd.read_csv(file_path)
 
-if page == 'Data Preview':
-    # Load the dataset
-    file_path = st.text_input('Enter file path of cleaned data (e.g., cleaned_data.csv)', 'cleaned_data.csv')
+# Display the DataFrame
+st.subheader('Data Preview:')
+st.dataframe(data)
 
-    if file_path:
-        try:
-            data = pd.read_csv(file_path)
-            # Display the DataFrame
-            st.subheader('Data Preview:')
-            st.dataframe(data)
+# Select the relevant features
+data = data[['Year', 'Month', 'General index']]
 
-            # Check data structure
-            st.write("Data Type:", type(data))
-            st.write("Data Shape:", data.shape)
-            st.write("Data Columns:", data.columns)
+# Convert Year and Month into a datetime format
+data['Date'] = pd.to_datetime(data[['Year', 'Month']].assign(DAY=1))
 
-            # Select relevant features
-            if 'General index' in data.columns:
-                data = data[['Year', 'Month', 'General index']]
+# Sort by date
+data = data.sort_values(by='Date').reset_index(drop=True)
 
-                # Convert Year and Month into a datetime format
-                data['Date'] = pd.to_datetime(data[['Year', 'Month']].assign(DAY=1))
+# Drop Year and Month as they are now redundant
+data = data.drop(columns=['Year', 'Month'])
 
-                # Drop Year and Month
-                data = data.drop(columns=['Year', 'Month'])
-                data.set_index('Date', inplace=True)
+# Set Date as index
+data.set_index('Date', inplace=True)
 
-                # Check data structure after preprocessing
-                st.write("Processed Data Type:", type(data))
-                st.write("Processed Data Shape:", data.shape)
-                st.write("Processed Data Columns:", data.columns)
+# Plot the General Index to understand its trend
+st.subheader('General Index Over Time')
+base_chart = alt.Chart(data.reset_index()).mark_line().encode(
+    x='Date:T',
+    y='General index:Q'
+).properties(
+    width=700,
+    height=400
+).interactive()
+st.altair_chart(base_chart)
 
-                # Plot the General Index to understand its trend
-                st.subheader('General Index Over Time')
-                base_chart = alt.Chart(data.reset_index()).mark_line().encode(
-                    x='Date:T',
-                    y='General index:Q'
-                ).properties(
-                    width=700,
-                    height=400
-                ).interactive()
-                st.altair_chart(base_chart)
+# Scaling the data
+scaler = MinMaxScaler(feature_range=(0, 1))
+scaled_data = scaler.fit_transform(data)
 
-            else:
-                st.error("The dataset does not contain the required 'General index' column.")
+# Creating the dataset for LSTM
+def create_dataset(dataset, time_step=1):
+    X, Y = [], []
+    for i in range(len(dataset)-time_step-1):
+        a = dataset[i:(i+time_step), 0]
+        X.append(a)
+        Y.append(dataset[i + time_step, 0])
+    return np.array(X), np.array(Y)
 
-        except Exception as e:
-            st.error(f"An error occurred: {e}")
+time_step = 12
+X, Y = create_dataset(scaled_data, time_step)
 
-elif page == 'Forecast and Model Evaluation':
-    # Ensure that the file has been uploaded
-    file_path = st.text_input('Enter file path of cleaned data (e.g., cleaned_data.csv)', 'cleaned_data.csv')
+# Reshape input to be [samples, time steps, features] for LSTM
+X = X.reshape(X.shape[0], X.shape[1], 1)
 
-    if file_path:
-        try:
-            data = pd.read_csv(file_path)
+# Split the data into training and testing sets
+train_size = int(len(X) * 0.8)
+X_train, X_test = X[:train_size], X[train_size:]
+Y_train, Y_test = Y[:train_size], Y[train_size:]
 
-            # Select relevant features and preprocess
-            data = data[['Year', 'Month', 'General index']]
-            data['Date'] = pd.to_datetime(data[['Year', 'Month']].assign(DAY=1))
-            data = data.drop(columns=['Year', 'Month'])
-            data.set_index('Date', inplace=True)
+# Build the LSTM model
+model = Sequential()
+model.add(LSTM(100, return_sequences=True, input_shape=(time_step, 1)))
+model.add(Dropout(0.2))
+model.add(LSTM(100, return_sequences=False))
+model.add(Dropout(0.2))
+model.add(Dense(1))
+model.compile(optimizer='adam', loss='mean_squared_error')
 
-            # Scaling the data
-            scaler = MinMaxScaler(feature_range=(0, 1))
-            scaled_data = scaler.fit_transform(data)
+# Train the model
+st.subheader('Training LSTM Model...')
+model.fit(X_train, Y_train, epochs=100, batch_size=32, validation_data=(X_test, Y_test), verbose=1)
 
-            # Creating the dataset for LSTM
-            def create_dataset(dataset, time_step=1):
-                X, Y = [], []
-                for i in range(len(dataset)-time_step-1):
-                    a = dataset[i:(i+time_step), 0]
-                    X.append(a)
-                    Y.append(dataset[i + time_step, 0])
-                return np.array(X), np.array(Y)
+# Predicting the next 60 months (5 years) using LSTM
+forecast_steps = 60
+future_predictions_lstm = []
 
-            time_step = 12
-            X, Y = create_dataset(scaled_data, time_step)
-            X = X.reshape(X.shape[0], X.shape[1], 1)
+current_input_lstm = X_test[-1].reshape(1, time_step, 1)
+for _ in range(forecast_steps):
+    future_pred_lstm = model.predict(current_input_lstm)
+    future_predictions_lstm.append(future_pred_lstm[0, 0])
+    current_input_lstm = np.append(current_input_lstm[:, 1:, :], future_pred_lstm.reshape(1, 1, 1), axis=1)
 
-            # Split the data into training and testing sets
-            train_size = int(len(X) * 0.8)
-            X_train, X_test = X[:train_size], X[train_size:]
-            Y_train, Y_test = Y[:train_size], Y[train_size:]
+future_dates_lstm = pd.date_range(data.index[-1] + pd.DateOffset(months=1), periods=forecast_steps, freq='M')
+future_predictions_lstm_inv = scaler.inverse_transform(np.array(future_predictions_lstm).reshape(-1, 1))
 
-            # Build the LSTM model
-            model = Sequential()
-            model.add(LSTM(100, return_sequences=True, input_shape=(time_step, 1)))
-            model.add(Dropout(0.2))
-            model.add(LSTM(100, return_sequences=False))
-            model.add(Dropout(0.2))
-            model.add(Dense(1))
-            model.compile(optimizer='adam', loss='mean_squared_error')
+# Define the SARIMA model
+sarima_model = SARIMAX(data['General index'], 
+                       order=(1, 1, 1),  # ARIMA parameters (p, d, q)
+                       seasonal_order=(1, 1, 1, 12),  # Seasonal parameters (P, D, Q, s)
+                       enforce_stationarity=False,
+                       enforce_invertibility=False)
 
-            # Train the model
-            st.subheader('Training LSTM Model...')
-            model.fit(X_train, Y_train, epochs=100, batch_size=32, validation_data=(X_test, Y_test), verbose=1)
+# Fit the model
+sarima_results = sarima_model.fit(disp=False)
 
-            # Predicting the next 60 months (5 years) using LSTM
-            forecast_steps = 60
-            future_predictions_lstm = []
-            current_input_lstm = X_test[-1].reshape(1, time_step, 1)
-            for _ in range(forecast_steps):
-                future_pred_lstm = model.predict(current_input_lstm)
-                future_predictions_lstm.append(future_pred_lstm[0, 0])
-                current_input_lstm = np.append(current_input_lstm[:, 1:, :], future_pred_lstm.reshape(1, 1, 1), axis=1)
+# Forecasting the next 60 months (5 years) using SARIMA
+forecast_sarima = sarima_results.get_forecast(steps=forecast_steps)
+forecast_index_sarima = pd.date_range(start=data.index[-1] + pd.DateOffset(months=1), periods=forecast_steps, freq='M')
+forecast_mean_sarima = forecast_sarima.predicted_mean
+forecast_conf_int_sarima = forecast_sarima.conf_int()
 
-            future_dates_lstm = pd.date_range(data.index[-1] + pd.DateOffset(months=1), periods=forecast_steps, freq='M')
-            future_predictions_lstm_inv = scaler.inverse_transform(np.array(future_predictions_lstm).reshape(-1, 1))
+# Dummy future actual values for comparison (Replace with actual future values if available)
+dummy_future_actual = np.random.rand(forecast_steps)  # Replace with actual future values
 
-            # Define the SARIMA model
-            sarima_model = SARIMAX(data['General index'], 
-                                order=(1, 1, 1),  # ARIMA parameters (p, d, q)
-                                seasonal_order=(1, 1, 1, 12),  # Seasonal parameters (P, D, Q, s)
-                                enforce_stationarity=False,
-                                enforce_invertibility=False)
+# Convert predictions to binary (using a threshold)
+threshold = 0.5
+lstm_binary_preds = (future_predictions_lstm_inv.flatten() >= threshold).astype(int)
+sarima_binary_preds = (forecast_mean_sarima >= threshold).astype(int)
+dummy_binary_actual = (dummy_future_actual >= threshold).astype(int)
 
-            # Fit the model
-            sarima_results = sarima_model.fit(disp=False)
+# Evaluate SARIMA
+precision_sarima = precision_score(dummy_binary_actual, sarima_binary_preds)
+recall_sarima = recall_score(dummy_binary_actual, sarima_binary_preds)
+f1_sarima = f1_score(dummy_binary_actual, sarima_binary_preds)
+accuracy_sarima = accuracy_score(dummy_binary_actual, sarima_binary_preds)
+mse_sarima = mean_squared_error(dummy_future_actual, forecast_mean_sarima)
+rmse_sarima = np.sqrt(mse_sarima)
 
-            # Forecasting the next 60 months (5 years) using SARIMA
-            forecast_sarima = sarima_results.get_forecast(steps=forecast_steps)
-            forecast_index_sarima = pd.date_range(start=data.index[-1] + pd.DateOffset(months=1), periods=forecast_steps, freq='M')
-            forecast_mean_sarima = forecast_sarima.predicted_mean
-            forecast_conf_int_sarima = forecast_sarima.conf_int()
+# Evaluate LSTM
+precision_lstm = precision_score(dummy_binary_actual, lstm_binary_preds)
+recall_lstm = recall_score(dummy_binary_actual, lstm_binary_preds)
+f1_lstm = f1_score(dummy_binary_actual, lstm_binary_preds)
+accuracy_lstm = accuracy_score(dummy_binary_actual, lstm_binary_preds)
+mse_lstm = mean_squared_error(dummy_future_actual, future_predictions_lstm_inv.flatten())
+rmse_lstm = np.sqrt(mse_lstm)
 
-            # Dummy future actual values for comparison (Replace with actual future values if available)
-            dummy_future_actual = np.random.rand(forecast_steps)  # Replace with actual future values
+st.subheader('Model Evaluation Metrics')
+st.write(f"<div class='metric'>SARIMA - Precision: {precision_sarima}, Recall: {recall_sarima}, F1 Score: {f1_sarima}, Accuracy: {accuracy_sarima}, MSE: {mse_sarima}, RMSE: {rmse_sarima}</div>", unsafe_allow_html=True)
+st.write(f"<div class='metric'>LSTM - Precision: {precision_lstm}, Recall: {recall_lstm}, F1 Score: {f1_lstm}, Accuracy: {accuracy_lstm}, MSE: {mse_lstm}, RMSE: {rmse_lstm}</div>", unsafe_allow_html=True)
 
-            # Convert predictions to binary (using a threshold)
-            threshold = 0.5
-            lstm_binary_preds = (future_predictions_lstm_inv.flatten() >= threshold).astype(int)
-            sarima_binary_preds = (forecast_mean_sarima >= threshold).astype(int)
-            dummy_binary_actual = (dummy_future_actual >= threshold).astype(int)
+# Prepare data for plotting SARIMA and LSTM forecasts
+forecast_data_sarima = pd.DataFrame({
+    'Date': forecast_index_sarima,
+    'Year': forecast_index_sarima.year,
+    'Forecasted General Index (SARIMA)': forecast_mean_sarima
+})
 
-            # Evaluate SARIMA
-            precision_sarima = precision_score(dummy_binary_actual, sarima_binary_preds)
-            recall_sarima = recall_score(dummy_binary_actual, sarima_binary_preds)
-            f1_sarima = f1_score(dummy_binary_actual, sarima_binary_preds)
-            accuracy_sarima = accuracy_score(dummy_binary_actual, sarima_binary_preds)
-            mse_sarima = mean_squared_error(dummy_future_actual, forecast_mean_sarima)
-            rmse_sarima = np.sqrt(mse_sarima)
+forecast_data_lstm = pd.DataFrame({
+    'Date': future_dates_lstm,
+    'Year': future_dates_lstm.year,
+    'Forecasted General Index (LSTM)': future_predictions_lstm_inv.flatten()
+})
 
-            # Evaluate LSTM
-            precision_lstm = precision_score(dummy_binary_actual, lstm_binary_preds)
-            recall_lstm = recall_score(dummy_binary_actual, lstm_binary_preds)
-            f1_lstm = f1_score(dummy_binary_actual, lstm_binary_preds)
-            accuracy_lstm = accuracy_score(dummy_binary_actual, lstm_binary_preds)
-            mse_lstm = mean_squared_error(dummy_future_actual, future_predictions_lstm_inv.flatten())
-            rmse_lstm = np.sqrt(mse_lstm)
+# Separate Plotting for SARIMA
+st.subheader('SARIMA Forecast')
+sarima_chart = alt.Chart(forecast_data_sarima).mark_line(color='blue').encode(
+    x=alt.X('Year:O', title='Year'),
+    y='Forecasted General Index (SARIMA):Q',
+    tooltip=['Year:O', 'Forecasted General Index (SARIMA):Q']
+).properties(
+    width=700,
+    height=400
+)
+st.altair_chart(sarima_chart)
 
-            st.subheader('Model Evaluation Metrics')
-            st.write(f"<div class='metric'>SARIMA - Precision: {precision_sarima}, Recall: {recall_sarima}, F1 Score: {f1_sarima}, Accuracy: {accuracy_sarima}, MSE: {mse_sarima}, RMSE: {rmse_sarima}</div>", unsafe_allow_html=True)
-            st.write(f"<div class='metric'>LSTM - Precision: {precision_lstm}, Recall: {recall_lstm}, F1 Score: {f1_lstm}, Accuracy: {accuracy_lstm}, MSE: {mse_lstm}, RMSE: {rmse_lstm}</div>", unsafe_allow_html=True)
+# Separate Plotting for LSTM
+st.subheader('LSTM Forecast')
+lstm_chart = alt.Chart(forecast_data_lstm).mark_line(color='green').encode(
+    x=alt.X('Year:O', title='Year'),
+    y='Forecasted General Index (LSTM):Q',
+    tooltip=['Year:O', 'Forecasted General Index (LSTM):Q']
+).properties(
+    width=700,
+    height=400
+)
+st.altair_chart(lstm_chart)
 
-            # Prepare data for plotting SARIMA and LSTM forecasts
-            forecast_data_sarima = pd.DataFrame({
-                'Date': forecast_index_sarima,
-                'Year': forecast_index_sarima.year,
-                'Forecasted General Index (SARIMA)': forecast_mean_sarima
-            })
+# Comparison of forecasts
+comparison_data = pd.concat([
+    forecast_data_sarima[['Year', 'Forecasted General Index (SARIMA)']].rename(columns={'Forecasted General Index (SARIMA)': 'Forecast', 'Year': 'Year'}).assign(Model='SARIMA'),
+    forecast_data_lstm[['Year', 'Forecasted General Index (LSTM)']].rename(columns={'Forecasted General Index (LSTM)': 'Forecast', 'Year': 'Year'}).assign(Model='LSTM')
+])
 
-            forecast_data_lstm = pd.DataFrame({
-                'Date': future_dates_lstm,
-                'Year': future_dates_lstm.year,
-                'Forecasted General Index (LSTM)': future_predictions_lstm_inv.flatten()
-            })
+comparison_chart = alt.Chart(comparison_data).mark_line().encode(
+    x=alt.X('Year:O', title='Year'),
+    y=alt.Y('Forecast:Q', title='Forecasted General Index'),
+    color='Model:N',
+    tooltip=['Year:O', 'Model:N', 'Forecast:Q']
+).properties(
+    width=700,
+    height=400
+)
+st.altair_chart(comparison_chart)
 
-            # Separate Plotting for SARIMA
-            st.subheader('SARIMA Forecast')
-            sarima_chart = alt.Chart(forecast_data_sarima).mark_line(color='blue').encode(
-                x=alt.X('Year:O', title='Year'),
-                y='Forecasted General Index (SARIMA):Q',
-                tooltip=['Year:O', 'Forecasted General Index (SARIMA):Q']
-            ).properties(
-                width=700,
-                height=400
-            )
-            st.altair_chart(sarima_chart)
+# Ensure the plots and metrics are displayed properly
+st.subheader('Forecast Data')
+st.write("Forecasted General Index using SARIMA:")
+st.dataframe(forecast_data_sarima)
 
-            # Separate Plotting for LSTM
-            st.subheader('LSTM Forecast')
-            lstm_chart = alt.Chart(forecast_data_lstm).mark_line(color='green').encode(
-                x=alt.X('Year:O', title='Year'),
-                y='Forecasted General Index (LSTM):Q',
-                tooltip=['Year:O', 'Forecasted General Index (LSTM):Q']
-            ).properties(
-                width=700,
-                height=400
-            )
-            st.altair_chart(lstm_chart)
-
-            # Comparison of forecasts
-            comparison_data = pd.concat([
-                forecast_data_sarima[['Year', 'Forecasted General Index (SARIMA)']].rename(columns={'Forecasted General Index (SARIMA)': 'Forecast', 'Year': 'Year'}).assign(Model='SARIMA'),
-                forecast_data_lstm[['Year', 'Forecasted General Index (LSTM)']].rename(columns={'Forecasted General Index (LSTM)': 'Forecast', 'Year': 'Year'}).assign(Model='LSTM')
-            ])
-
-            comparison_chart = alt.Chart(comparison_data).mark_line().encode(
-                x=alt.X('Year:O', title='Year'),
-                y=alt.Y('Forecast:Q', title='Forecasted General Index'),
-                color='Model:N',
-                tooltip=['Year:O', 'Model:N', 'Forecast:Q']
-            ).properties(
-                width=700,
-                height=400
-            )
-            st.altair_chart(comparison_chart)
-
-            # Ensure the plots and metrics are displayed properly
-            st.subheader('Forecast Data')
-            st.write("Forecasted General Index using SARIMA:")
-            st.dataframe(forecast_data_sarima)
-
-            st.write("Forecasted General Index using LSTM:")
-            st.dataframe(forecast_data_lstm)
-
-        except Exception as e:
-            st.error(f"An error occurred: {e}")
+st.write("Forecasted General Index using LSTM:")
+st.dataframe(forecast_data_lstm)
