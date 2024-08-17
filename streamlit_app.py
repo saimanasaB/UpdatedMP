@@ -182,9 +182,8 @@ if page == "About Us":
 
     <h3 style='font-size: 26px; color: #2196F3;'>Our Team:</h3>
     <ul style='font-size: 20px;'>
-    <li><strong>John Doe</strong> - Lead Data Scientist: With over 10 years of experience in data science, John specializes in developing machine learning models and data analysis.</li>
-    <li><strong>Jane Smith</strong> - Data Analyst: Jane has a knack for turning complex data into clear and actionable insights.</li>
-    <li><strong>Alex Johnson</strong> - Business Intelligence Specialist: Alex focuses on integrating data analytics into business strategies to drive growth and efficiency.</li>
+    <li><strong>Sai Manasa B</strong> - Data Scientist: With over 4 years of experience in data science, Sai specializes in developing machine learning models and data analysis.</li>
+    <li><strong>Kimberly Marclin Nathan A</strong> - Data Analyst: Kim has a knack for turning complex data into clear and actionable insights, integrating data analytics into business strategies to drive growth and efficiency.</li>
     </ul>
 
     <h3 style='font-size: 26px; color: #2196F3;'>Our Vision:</h3>
