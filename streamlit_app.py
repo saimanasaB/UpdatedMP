@@ -77,41 +77,48 @@ st.markdown(f"""
 
 # Page navigation
 page = st.radio("", ["About Us", "Home", "Contact Us"], index=1, horizontal=True, key='nav')
-
 if page == "About Us":
     st.markdown('<div class="title">About Us</div>', unsafe_allow_html=True)
     
-    st.write("""
-    **Welcome to General Index Forecasting!**
+    st.markdown("""
+    <div style='font-size: 22px; line-height: 1.6; color: #333; background-color: rgba(255, 255, 255, 0.9); padding: 15px; border-radius: 8px;'>
+    <h2 style='font-size: 32px; color: #4CAF50;'>Welcome to General Index Forecasting!</h2>
 
     We are a dedicated team of data scientists and analysts passionate about harnessing the power of data to drive informed decisions. Our mission is to provide actionable insights through advanced forecasting techniques and data-driven analysis.
 
-    **Our Expertise:**
-    - **Data Analytics:** Transforming raw data into meaningful insights.
-    - **Machine Learning:** Developing predictive models to anticipate future trends.
-    - **Business Intelligence:** Leveraging data to enhance business strategies.
+    <h3 style='font-size: 26px; color: #2196F3;'>Our Expertise:</h3>
+    <ul style='font-size: 20px;'>
+    <li><strong>Data Analytics:</strong> Transforming raw data into meaningful insights.</li>
+    <li><strong>Machine Learning:</strong> Developing predictive models to anticipate future trends.</li>
+    <li><strong>Business Intelligence:</strong> Leveraging data to enhance business strategies.</li>
+    </ul>
 
-    **Our Collaboration with MOSPI:**
+    <h3 style='font-size: 26px; color: #2196F3;'>Our Collaboration with MOSPI:</h3>
     This project is specifically designed to cater to the needs of the Ministry of Statistics and Programme Implementation (MOSPI). We aim to provide MOSPI with advanced forecasting tools and insights to support their data-driven decision-making processes.
 
-    **Our Team:**
-    - **John Doe** - Lead Data Scientist: With over 10 years of experience in data science, John specializes in developing machine learning models and data analysis.
-    - **Jane Smith** - Data Analyst: Jane has a knack for turning complex data into clear and actionable insights.
-    - **Alex Johnson** - Business Intelligence Specialist: Alex focuses on integrating data analytics into business strategies to drive growth and efficiency.
+    <h3 style='font-size: 26px; color: #2196F3;'>Our Team:</h3>
+    <ul style='font-size: 20px;'>
+    <li><strong>John Doe</strong> - Lead Data Scientist: With over 10 years of experience in data science, John specializes in developing machine learning models and data analysis.</li>
+    <li><strong>Jane Smith</strong> - Data Analyst: Jane has a knack for turning complex data into clear and actionable insights.</li>
+    <li><strong>Alex Johnson</strong> - Business Intelligence Specialist: Alex focuses on integrating data analytics into business strategies to drive growth and efficiency.</li>
+    </ul>
 
-    **Our Vision:**
+    <h3 style='font-size: 26px; color: #2196F3;'>Our Vision:</h3>
     We aim to be at the forefront of data science and analytics, continuously innovating to provide our clients, including MOSPI, with the best tools and strategies for success. Our goal is to empower organizations with the knowledge and foresight to make data-driven decisions.
 
-    **Our Values:**
-    - **Integrity:** We uphold the highest standards of honesty and transparency.
-    - **Innovation:** We embrace creativity and new ideas to solve complex problems.
-    - **Excellence:** We are committed to delivering high-quality results and solutions.
+    <h3 style='font-size: 26px; color: #2196F3;'>Our Values:</h3>
+    <ul style='font-size: 20px;'>
+    <li><strong>Integrity:</strong> We uphold the highest standards of honesty and transparency.</li>
+    <li><strong>Innovation:</strong> We embrace creativity and new ideas to solve complex problems.</li>
+    <li><strong>Excellence:</strong> We are committed to delivering high-quality results and solutions.</li>
+    </ul>
 
-    **Get Involved:**
+    <h3 style='font-size: 26px; color: #2196F3;'>Get Involved:</h3>
     We are always looking to collaborate with like-minded professionals and organizations. If you're interested in working with us or learning more about our services, please reach out through our contact page.
 
     Thank you for visiting our website and learning more about us!
-    """)
+    </div>
+    """, unsafe_allow_html=True)
 
 elif page == "Home":
     st.markdown('<div class="title">General Index Forecasting using LSTM and SARIMA</div>', unsafe_allow_html=True)
