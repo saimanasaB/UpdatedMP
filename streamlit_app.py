@@ -15,7 +15,7 @@ def get_base64_of_image(image_file):
         return base64.b64encode(img.read()).decode()
 
 # Path to your image file
-image_path = "inflation3.jpg"
+image_path = "inflation5.jpg"
 
 # Convert the image to a Base64 string
 img_base64 = get_base64_of_image(image_path)
