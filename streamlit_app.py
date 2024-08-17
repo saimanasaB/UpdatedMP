@@ -66,9 +66,8 @@ st.markdown(f"""
         border-radius: 5px;
         cursor: pointer;
         margin: 0 5px;
+        font-size: 16px;
         text-align: center;
-        flex: 1; /* Ensure buttons take equal space */
-        font-size: 16px; /* Adjust font size */
     }}
     .nav button.active {{
         background-color: #333;
@@ -195,7 +194,7 @@ elif page == "Home":
     X_train, X_test = X[:train_size], X[train_size:]
     Y_train, Y_test = Y[:train_size], Y[train_size:]
     
-    # Build the LSTM model
+    # Build and train the LSTM model
     model = Sequential()
     model.add(LSTM(100, return_sequences=True, input_shape=(time_step, 1)))
     model.add(Dropout(0.2))
@@ -208,47 +207,73 @@ elif page == "Home":
     history = model.fit(X_train, Y_train, epochs=20, batch_size=32, validation_data=(X_test, Y_test), verbose=1)
     
     # Make predictions
-    predictions = model.predict(X_test)
+    lstm_predictions = model.predict(X_test)
     
-    # Inverse transform the predictions and actual values
-    predictions = scaler.inverse_transform(np.concatenate((predictions, np.zeros((predictions.shape[0], data.shape[1]-1))), axis=1))[:,0]
+    # Inverse transform the LSTM predictions
+    lstm_predictions = scaler.inverse_transform(np.concatenate((lstm_predictions, np.zeros((lstm_predictions.shape[0], data.shape[1]-1))), axis=1))[:,0]
     Y_test_inv = scaler.inverse_transform(np.concatenate((Y_test.reshape(-1, 1), np.zeros((Y_test.shape[0], data.shape[1]-1))), axis=1))[:,0]
     
-    # Plot the predictions
-    st.subheader('LSTM Model Predictions vs Actual Values')
+    # Fit the SARIMA model
+    sarima_model = SARIMAX(data['General index'], 
+                           order=(1, 1, 1), 
+                           seasonal_order=(1, 1, 1, 12))
+    sarima_result = sarima_model.fit()
+    
+    # Make SARIMA predictions
+    sarima_predictions = sarima_result.predict(start=len(data), end=len(data) + len(Y_test) - 1, dynamic=False)
+    
+    # Plot the LSTM and SARIMA predictions
+    st.subheader('LSTM and SARIMA Model Predictions vs Actual Values')
     predictions_df = pd.DataFrame({
-        'Date': data.index[-len(predictions):],
+        'Date': data.index[-len(lstm_predictions):],
         'Actual': Y_test_inv,
-        'Predicted': predictions
+        'LSTM_Predicted': lstm_predictions,
+        'SARIMA_Predicted': sarima_predictions
     })
     
     chart = alt.Chart(predictions_df).mark_line().encode(
         x='Date:T',
         y='Actual:Q',
-        color=alt.value('red')
+        color=alt.value('red'),
+        tooltip=['Date:T', 'Actual:Q']
     ).properties(
         width=700,
         height=400
     )
     
-    predicted_line = alt.Chart(predictions_df).mark_line().encode(
+    lstm_line = alt.Chart(predictions_df).mark_line().encode(
         x='Date:T',
-        y='Predicted:Q',
-        color=alt.value('blue')
+        y='LSTM_Predicted:Q',
+        color=alt.value('blue'),
+        tooltip=['Date:T', 'LSTM_Predicted:Q']
     )
     
-    st.altair_chart(chart + predicted_line)
+    sarima_line = alt.Chart(predictions_df).mark_line().encode(
+        x='Date:T',
+        y='SARIMA_Predicted:Q',
+        color=alt.value('green'),
+        tooltip=['Date:T', 'SARIMA_Predicted:Q']
+    )
+    
+    st.altair_chart(chart + lstm_line + sarima_line)
     
     # Model evaluation
     st.subheader('Model Evaluation Metrics')
-    mse = mean_squared_error(Y_test_inv, predictions)
-    mae = mean_absolute_error(Y_test_inv, predictions)
+    mse_lstm = mean_squared_error(Y_test_inv, lstm_predictions)
+    mae_lstm = mean_absolute_error(Y_test_inv, lstm_predictions)
+    mse_sarima = mean_squared_error(Y_test_inv, sarima_predictions)
+    mae_sarima = mean_absolute_error(Y_test_inv, sarima_predictions)
     
     st.markdown(f"""
-    **Mean Squared Error (MSE):** {mse:.2f}
-    **Mean Absolute Error (MAE):** {mae:.2f}
-    """)
+    **LSTM Model Evaluation:**
+    **Mean Squared Error (MSE):** {mse_lstm:.2f}
+    **Mean Absolute Error (MAE):** {mae_lstm:.2f}
     
+    **SARIMA Model Evaluation:**
+    **Mean Squared Error (MSE):** {mse_sarima:.2f}
+    **Mean Absolute Error (MAE):** {mae_sarima:.2f}
+    """)
+
 elif page == "Contact Us":
     st.markdown('<div class="title">Contact Us</div>', unsafe_allow_html=True)
     
