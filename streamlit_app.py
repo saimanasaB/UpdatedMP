@@ -113,8 +113,6 @@ if page == "About Us":
     Thank you for visiting our website and learning more about us!
     """)
 
-    st.markdown('<div class="title">About Us</div>', unsafe_allow_html=True)
-    st.write("Welcome to the General Index Forecasting App. This application uses LSTM and SARIMA models to forecast future trends based on historical data. Our goal is to provide accurate predictions and insights to help with decision-making processes.")
 elif page == "Home":
     st.markdown('<div class="title">General Index Forecasting using LSTM and SARIMA</div>', unsafe_allow_html=True)
     
