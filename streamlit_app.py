@@ -306,10 +306,36 @@ elif page == "Home":
     
     st.write("Forecasted General Index using LSTM:")
     st.dataframe(forecast_data_lstm)
-
 elif page == "Contact Us":
     st.markdown('<div class="title">Contact Us</div>', unsafe_allow_html=True)
-    st.write("If you have any questions or feedback, please contact us at:")
-    st.write("Email: example@example.com")
-    st.write("Phone: +1-234-567-890")
-    st.write("Address: 123 Data Street, Analytics City, DataLand")
+    
+    st.write("""
+    **We'd Love to Hear from You!**
+
+    Whether you have questions, feedback, or are interested in our services, please don't hesitate to reach out to us. We're here to help!
+
+    **Contact Information:**
+
+    - **Email:** [example@example.com](mailto:example@example.com)
+    - **Phone:** +1-234-567-890
+    - **Address:** 123 Data Street, Analytics City, DataLand
+
+    **Business Hours:**
+    - Monday to Friday: 9:00 AM - 6:00 PM (EST)
+    - Saturday: 10:00 AM - 4:00 PM (EST)
+    - Sunday: Closed
+
+    **Follow Us:**
+    - [LinkedIn](https://www.linkedin.com/company/example)
+    - [Twitter](https://twitter.com/example)
+    - [Facebook](https://facebook.com/example)
+
+    **Get In Touch:**
+    If you have any inquiries or would like to discuss potential projects, please fill out the contact form below or use the contact details provided.
+
+    **Contact Form:**
+    (You may integrate a contact form here if desired.)
+
+    Thank you for your interest in connecting with us!
+    """)
+
