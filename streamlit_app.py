@@ -76,9 +76,22 @@ st.markdown(f"""
 """, unsafe_allow_html=True)
 
 # Page navigation
-page = st.radio("", ["About Us", "Home", "Contact Us"], index=1, horizontal=True, key='nav')
-if page == "About Us":
+
+# Page navigation buttons
+st.markdown('<div class="nav">', unsafe_allow_html=True)
+about_us = st.button("About Us")
+home = st.button("Home")
+contact_us = st.button("Contact Us")
+st.markdown('</div>', unsafe_allow_html=True)
+
+if about_us:
     st.markdown('<div class="title">About Us</div>', unsafe_allow_html=True)
+    st.markdown("""
+    <!-- Your About Us content here -->
+    """, unsafe_allow_html=True)
+
+elif home:
+    st.markdown('<div class="title">General Index Forecasting using LSTM and SARIMA</div>', unsafe_allow_html=True)
     
     st.markdown("""
     <div style='font-size: 22px; line-height: 1.6; color: #333; background-color: rgba(255, 255, 255, 0.9); padding: 15px; border-radius: 8px;'>
