@@ -3,7 +3,7 @@ import numpy as np
 import altair as alt
 import streamlit as st
 from sklearn.preprocessing import MinMaxScaler
-from sklearn.metrics import mean_squared_error, mean_absolute_error, precision_score, recall_score, f1_score, accuracy_score
+from sklearn.metrics import mean_squared_error, mean_absolute_error
 from statsmodels.tsa.statespace.sarimax import SARIMAX
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import LSTM, Dense, Dropout
@@ -56,6 +56,7 @@ st.markdown(f"""
         display: flex;
         justify-content: center;
         margin-bottom: 20px;
+        flex-direction: row;
     }}
     .nav button {{
         background-color: #4CAF50;
