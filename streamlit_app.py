@@ -65,17 +65,8 @@ st.markdown(f"""
     </style>
 """, unsafe_allow_html=True)
 
-# Radio buttons for navigation in vertical layout
-st.markdown("""
-    <div class="vertical-radio">
-        <label><input type="radio" name="page" value="About Us"> About Us</label>
-        <label><input type="radio" name="page" value="Home" checked> Home</label>
-        <label><input type="radio" name="page" value="Contact Us"> Contact Us</label>
-    </div>
-""", unsafe_allow_html=True)
-
 # Get selected page from the radio buttons
-page_selection = st.radio("Choose a page:", ["About Us", "Home", "Contact Us"], index=1)
+page_selection = st.radio(["About Us", "Home", "Contact Us"], index=1)
 
 if page_selection == "About Us":
     st.markdown('<div class="title">About Us</div>', unsafe_allow_html=True)
