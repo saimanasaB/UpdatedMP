@@ -3,7 +3,7 @@ import numpy as np
 import altair as alt
 import streamlit as st
 from sklearn.preprocessing import MinMaxScaler
-from sklearn.metrics import mean_squared_error, mean_absolute_error, precision_score, recall_score, f1_score, accuracy_score
+from sklearn.metrics import mean_squared_error, precision_score, recall_score, f1_score, accuracy_score
 from statsmodels.tsa.statespace.sarimax import SARIMAX
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import LSTM, Dense, Dropout
@@ -210,6 +210,14 @@ elif page_selection == "Home":
     mse_sarima = mean_squared_error(dummy_future_actual, forecast_mean_sarima)
     rmse_sarima = np.sqrt(mse_sarima)
 
+    # Evaluate LSTM
+    precision_lstm = precision_score(dummy_binary_actual, lstm_binary_preds)
+    recall_lstm = recall_score(dummy_binary_actual, lstm_binary_preds)
+    f1_lstm = f1_score(dummy_binary_actual, lstm_binary_preds)
+    accuracy_lstm = accuracy_score(dummy_binary_actual, lstm_binary_preds)
+    mse_lstm = mean_squared_error(dummy_future_actual, future_predictions_lstm_inv.flatten())
+    rmse_lstm = np.sqrt(mse_lstm)
+
     # Plot SARIMA and LSTM forecasts
     st.subheader('Forecast Comparison: SARIMA vs LSTM')
 
@@ -248,6 +256,14 @@ elif page_selection == "Home":
     st.write(f'**Recall:** {recall_sarima}')
     st.write(f'**F1 Score:** {f1_sarima}')
     st.write(f'**Accuracy:** {accuracy_sarima}')
+
+    st.subheader('Evaluation Metrics for LSTM:')
+    st.write(f'**Mean Squared Error (MSE):** {mse_lstm}')
+    st.write(f'**Root Mean Squared Error (RMSE):** {rmse_lstm}')
+    st.write(f'**Precision:** {precision_lstm}')
+    st.write(f'**Recall:** {recall_lstm}')
+    st.write(f'**F1 Score:** {f1_lstm}')
+    st.write(f'**Accuracy:** {accuracy_lstm}')
 
 elif page_selection == "Contact Us":
     st.markdown('<div class="title">Contact Us</div>', unsafe_allow_html=True)
