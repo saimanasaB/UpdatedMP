@@ -66,7 +66,7 @@ st.markdown(f"""
 """, unsafe_allow_html=True)
 
 # Get selected page from the radio buttons
-page_selection = st.radio(["About Us", "Home", "Contact Us"], index=1)
+page_selection = st.radio("Choose a page:",["About Us", "Home", "Contact Us"], index=1)
 
 if page_selection == "About Us":
     st.markdown('<div class="title">About Us</div>', unsafe_allow_html=True)
