@@ -249,7 +249,7 @@ np.random.seed(42)
 tf.random.set_seed(42)
 
 # Page: Home
-elif page == "Home":
+if page == "Home":
     st.markdown('<div class="title">General Index Forecasting using LSTM and SARIMA</div>', unsafe_allow_html=True)
     
     # Load the dataset
