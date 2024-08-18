@@ -252,7 +252,8 @@ tf.random.set_seed(42)
 
 # Page: Home
 if page == "Home":
-        st.title("General Index Forecasting using LSTM and SARIMA")
+    
+    st.title("General Index Forecasting using LSTM and SARIMA")
 
     # Load the dataset
     file_path = st.text_input('Enter file path of cleaned data (e.g., cleaned_data.csv)', 'cleaned_data.csv')
