@@ -20,110 +20,117 @@ image_path = "bg2.jpg"
 # Convert the image to a Base64 string
 img_base64 = get_base64_of_image(image_path)
 
-# Create the CSS with the Base64 encoded image and enhanced styling
+
+# Updated CSS with enhanced styling and subtle animations
 st.markdown(f"""
     <style>
     @keyframes fadeIn {{
-        from {{ opacity: 0; }}
-        to {{ opacity: 1; }}
+        0% {{ opacity: 0; }}
+        100% {{ opacity: 1; }}
+    }}
+    @keyframes slideIn {{
+        0% {{ transform: translateY(20px); opacity: 0; }}
+        100% {{ transform: translateY(0); opacity: 1; }}
     }}
     .main {{
         background-image: url("data:image/jpg;base64,{img_base64}");
         background-size: cover;
         background-position: center;
-        color: #ffffff;
-        font-family: 'Arial', sans-serif;
-        animation: fadeIn 1s ease-in-out;
+        color: #333;
+        animation: fadeIn 1.5s ease-in-out;
     }}
     .title {{
-        font-size: 42px;
+        font-size: 36px;
         color: #ffffff;
         text-align: center;
         padding: 20px;
-        background: linear-gradient(to right, #ff7e5f, #feb47b);
-        border-radius: 12px;
-        box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
-        margin-bottom: 20px;
-        animation: fadeIn 1.5s ease-in-out;
+        background: linear-gradient(to right, #f46b45, #eea849);
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        animation: slideIn 1s ease-in-out;
     }}
     .subheader {{
-        font-size: 28px;
+        font-size: 24px;
         color: #ffffff;
         margin-top: 20px;
-        margin-bottom: 20px;
-        background: linear-gradient(to right, #00c6ff, #0072ff);
-        padding: 15px;
-        border-radius: 10px;
+        margin-bottom: 10px;
+        background: linear-gradient(to right, #36d1dc, #5b86e5);
+        padding: 10px;
+        border-radius: 8px;
         text-align: center;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-        animation: fadeIn 2s ease-in-out;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        animation: slideIn 1.2s ease-in-out;
     }}
     .metric {{
-        font-size: 20px;
+        font-size: 18px;
         font-weight: bold;
         color: #ffffff;
-        background: linear-gradient(to right, #ff6a00, #ee0979);
-        padding: 12px;
-        border-radius: 10px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        background: linear-gradient(to right, #ff4b1f, #ff9068);
+        padding: 10px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         text-align: center;
-        margin-bottom: 20px;
-        animation: fadeIn 2.5s ease-in-out;
+        margin-top: 10px;
+        animation: fadeIn 1.5s ease-in-out;
     }}
     .nav {{
         display: flex;
         justify-content: center;
-        margin-bottom: 30px;
+        margin-bottom: 20px;
+        animation: fadeIn 1.5s ease-in-out;
     }}
     .nav input[type="radio"] {{
         display: none;
     }}
     .nav label {{
-        background: linear-gradient(to right, #ff7e5f, #feb47b);
+        background: linear-gradient(to right, #4CAF50, #81C784);
         color: #ffffff;
-        padding: 15px 30px;
-        border-radius: 10px;
+        padding: 12px 24px;
+        border-radius: 8px;
         cursor: pointer;
-        margin: 0 8px;
+        margin: 0 5px;
         text-align: center;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         font-weight: bold;
         transition: background 0.3s ease, transform 0.3s ease;
+        animation: slideIn 1.2s ease-in-out;
     }}
     .nav input[type="radio"]:checked + label {{
         background: linear-gradient(to right, #333333, #616161);
         transform: scale(1.05);
     }}
     .content {{
-        font-size: 24px;
+        font-size: 22px;
         line-height: 1.8;
-        color: #ffffff;
-        background: rgba(0, 0, 0, 0.7);
-        padding: 30px;
-        border-radius: 15px;
-        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-        animation: fadeIn 3s ease-in-out;
+        color: #333;
+        background: rgba(255, 255, 255, 0.9);
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        animation: fadeIn 1.5s ease-in-out;
     }}
     .content h2 {{
-        font-size: 36px;
-        color: #ff7e5f;
+        font-size: 32px;
+        color: #4CAF50;
         text-align: center;
+        animation: slideIn 1s ease-in-out;
     }}
     .content h3 {{
-        font-size: 30px;
-        color: #00c6ff;
+        font-size: 26px;
+        color: #2196F3;
+        animation: slideIn 1.2s ease-in-out;
     }}
     .content ul {{
-        font-size: 22px;
-        margin: 15px 0;
+        font-size: 20px;
+        margin: 10px 0;
         padding: 0;
-        list-style: square;
+        animation: fadeIn 1.5s ease-in-out;
     }}
     .content ul li {{
-        margin-bottom: 12px;
+        margin-bottom: 10px;
     }}
     .content a {{
-        color: #00c6ff;
+        color: #4CAF50;
         text-decoration: none;
         font-weight: bold;
     }}
@@ -131,40 +138,43 @@ st.markdown(f"""
         text-decoration: underline;
     }}
     .form-container {{
-        font-size: 24px;
+        font-size: 22px;
         line-height: 1.8;
-        color: #ffffff;
-        background: rgba(0, 0, 0, 0.7);
-        padding: 30px;
-        border-radius: 15px;
-        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-        animation: fadeIn 3s ease-in-out;
+        color: #333;
+        background: rgba(255, 255, 255, 0.9);
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        animation: fadeIn 1.5s ease-in-out;
     }}
     .form-container form {{
         display: flex;
         flex-direction: column;
     }}
     .form-container label {{
-        font-size: 22px;
-        margin-top: 15px;
+        font-size: 20px;
+        margin-top: 10px;
+        animation: slideIn 1.2s ease-in-out;
     }}
     .form-container input, .form-container textarea {{
-        padding: 12px;
-        margin-top: 10px;
-        border: 1px solid #dddddd;
-        border-radius: 10px;
-        font-size: 20px;
+        padding: 10px;
+        margin-top: 5px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 18px;
+        animation: slideIn 1.4s ease-in-out;
     }}
     .form-container input[type="submit"] {{
-        background: linear-gradient(to right, #ff7e5f, #feb47b);
+        background: linear-gradient(to right, #f46b45, #eea849);
         color: #ffffff;
-        padding: 15px;
+        padding: 12px;
         border: none;
-        border-radius: 10px;
+        border-radius: 8px;
         cursor: pointer;
-        font-size: 22px;
+        font-size: 20px;
         font-weight: bold;
         transition: background 0.3s ease, transform 0.3s ease;
+        animation: slideIn 1.6s ease-in-out;
     }}
     .form-container input[type="submit"]:hover {{
         background: linear-gradient(to right, #333333, #616161);
@@ -176,47 +186,36 @@ st.markdown(f"""
 # Page navigation
 page = st.radio("", ["About Us", "Home", "Contact Us"], index=1, horizontal=True, key='nav')
 if page == "About Us":
+    
     st.markdown('<div class="title">About Us</div>', unsafe_allow_html=True)
     
     st.markdown("""
-    <div class="content">
-    <h2>Welcome to General Index Forecasting!</h2>
-    <p>We are a dedicated team of data scientists and analysts passionate about harnessing the power of data to drive informed decisions. Our mission is to provide actionable insights through advanced forecasting techniques and data-driven analysis.</p>
-    
-    <h3>Our Expertise:</h3>
-    <ul>
-        <li><strong>Data Analytics:</strong> Transforming raw data into meaningful insights.</li>
-        <li><strong>Machine Learning:</strong> Developing predictive models to anticipate future trends.</li>
-        <li><strong>Business Intelligence:</strong> Leveraging data to enhance business strategies.</li>
+    <div style='font-size: 22px; line-height: 1.6; color: #333; background-color: rgba(255, 255, 255, 0.9); padding: 15px; border-radius: 8px;'>
+    <h2 style='font-size: 32px; color: #4CAF50;'>Welcome to General Index Forecasting!</h2>
+
+    We are a dedicated team of data scientists and analysts passionate about harnessing the power of data to drive informed decisions. Our mission is to provide actionable insights through advanced forecasting techniques and data-driven analysis.
+
+    <h3 style='font-size: 26px; color: #2196F3;'>Our Expertise:</h3>
+    <ul style='font-size: 20px;'>
+    <li><strong>Data Analytics:</strong> Transforming raw data into meaningful insights.</li>
+    <li><strong>Machine Learning:</strong> Developing predictive models to anticipate future trends.</li>
+    <li><strong>Business Intelligence:</strong> Leveraging data to enhance business strategies.</li>
     </ul>
-    
-    <h3>Our Collaboration with MOSPI:</h3>
-    <p>This project is specifically designed to cater to the needs of the Ministry of Statistics and Programme Implementation (MOSPI). We aim to provide MOSPI with advanced forecasting tools and insights to support their data-driven decision-making processes.</p>
-    
-    <h3>Our Team:</h3>
-    <ul>
-        <li><strong>Sai Manasa B</strong> - Data Scientist: With over 4 years of experience in data science, Sai specializes in developing machine learning models and data analysis.</li>
-        <li><strong>Kimberly Marclin Nathan A</strong> - Data Analyst: Kim has a knack for turning complex data into clear and actionable insights, integrating data analytics into business strategies to drive growth and efficiency.</li>
+
+    <h3 style='font-size: 26px; color: #2196F3;'>Our Collaboration with MOSPI:</h3>
+    This project is specifically designed to cater to the needs of the Ministry of Statistics and Programme Implementation (MOSPI). We aim to provide MOSPI with advanced forecasting tools and insights to support their data-driven decision-making processes.
+
+    <h3 style='font-size: 26px; color: #2196F3;'>Our Team:</h3>
+    <ul style='font-size: 20px;'>
+    <li><strong>Sai Manasa B</strong> - Data Scientist: With over 4 years of experience in data science, Sai specializes in developing machine learning models and data analysis.</li>
+    <li><strong>Kimberly Marclin Nathaniel</strong> - Business Analyst: Kimberly has a keen eye for identifying business opportunities through data.</li>
+    <li><strong>Deepika</strong> - Software Engineer: Expert in building scalable applications and data pipelines.</li>
+    <li><strong>Sai Ramya</strong> - Data Analyst: Sai Ramya excels in data visualization and trend analysis.</li>
     </ul>
-    
-    <h3>Our Vision:</h3>
-    <p>We aim to be at the forefront of data science and analytics, continuously innovating to provide our clients, including MOSPI, with the best tools and strategies for success. Our goal is to empower organizations with the knowledge and foresight to make data-driven decisions.</p>
-    
-    <h3>Our Values:</h3>
-    <ul>
-        <li><strong>Integrity:</strong> We uphold the highest standards of honesty and transparency.</li>
-        <li><strong>Innovation:</strong> We embrace creativity and new ideas to solve complex problems.</li>
-        <li><strong>Excellence:</strong> We are committed to delivering high-quality results and solutions.</li>
-    </ul>
-    
-    <h3>Get Involved:</h3>
-    <p>We are always looking to collaborate with like-minded professionals and organizations. If you're interested in working with us or have any questions, feel free to reach out through our <a href="#Contact Us">Contact Us</a> page.</p>
-    
-    <h3>Thank You!</h3>
-    <p>We appreciate your interest in our work and look forward to the opportunity to collaborate with you.</p>
     </div>
     """, unsafe_allow_html=True)
-    
+        
+        
 elif page == "Home":
     st.markdown('<div class="title">Home - General Index Forecasting</div>', unsafe_allow_html=True)
 
@@ -355,19 +354,22 @@ elif page == "Home":
 
 elif page == "Contact Us":
     st.markdown('<div class="title">Contact Us</div>', unsafe_allow_html=True)
+    
     st.markdown("""
-    <div class="form-container">
-        <form action="https://formspree.io/f/{your_form_id}" method="POST">
-            <label for="name">Name:</label>
-            <input type="text" id="name" name="name" required>
+    <div class='form-container'>
+    <form action="https://formsubmit.co/your-email@example.com" method="POST">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required>
 
-            <label for="email">Email:</label>
-            <input type="email" id="email" name="email" required>
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
 
-            <label for="message">Message:</label>
-            <textarea id="message" name="message" rows="5" required></textarea>
+        <label for="message">Message:</label>
+        <textarea id="message" name="message" rows="4" required></textarea>
 
-            <input type="submit" value="Send">
-        </form>
+        <input type="submit" value="Send">
+    </form>
     </div>
     """, unsafe_allow_html=True)
+
+    
