@@ -243,7 +243,8 @@ if page == "About Us":
     </div>
     """, unsafe_allow_html=True)
 
-elif page == "Home":
+# Page: Home
+if page == "Home":
     st.markdown('<div class="title">General Index Forecasting using LSTM and SARIMA</div>', unsafe_allow_html=True)
     
     # Load the dataset
@@ -436,7 +437,6 @@ elif page == "Home":
     
     st.write("Forecasted General Index using LSTM:")
     st.dataframe(forecast_data_lstm)
-
 elif page == "Contact Us":
     st.markdown('<div class="title">Contact Us</div>', unsafe_allow_html=True)
     
