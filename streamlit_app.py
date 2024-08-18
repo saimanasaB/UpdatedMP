@@ -252,7 +252,7 @@ tf.random.set_seed(42)
 
 # Page: Home
 if page == "Home":
-    st.title("General Index Forecasting using LSTM and SARIMA")
+        st.title("General Index Forecasting using LSTM and SARIMA")
 
     # Load the dataset
     file_path = st.text_input('Enter file path of cleaned data (e.g., cleaned_data.csv)', 'cleaned_data.csv')
@@ -323,7 +323,7 @@ if page == "Home":
     
     # Train the model
     st.subheader('Training LSTM Model...')
-    model.fit(X_train, Y_train, epochs=100, batch_size=32, validation_data=(X_test, Y_test), verbose=1)
+    history = model.fit(X_train, Y_train, epochs=100, batch_size=32, validation_data=(X_test, Y_test), verbose=1)
     
     # Predicting the next 60 months (5 years) using LSTM
     forecast_steps = 60
@@ -370,6 +370,7 @@ if page == "Home":
     accuracy_sarima = accuracy_score(dummy_binary_actual, sarima_binary_preds)
     mse_sarima = mean_squared_error(dummy_future_actual, forecast_mean_sarima)
     rmse_sarima = np.sqrt(mse_sarima)
+    mae_sarima = mean_absolute_error(dummy_future_actual, forecast_mean_sarima)
     
     # Evaluate LSTM
     precision_lstm = precision_score(dummy_binary_actual, lstm_binary_preds)
@@ -378,10 +379,11 @@ if page == "Home":
     accuracy_lstm = accuracy_score(dummy_binary_actual, lstm_binary_preds)
     mse_lstm = mean_squared_error(dummy_future_actual, future_predictions_lstm_inv.flatten())
     rmse_lstm = np.sqrt(mse_lstm)
+    mae_lstm = mean_absolute_error(dummy_future_actual, future_predictions_lstm_inv.flatten())
     
     st.subheader('Model Evaluation Metrics')
-    st.write(f"<div class='metric'>SARIMA - Precision: {precision_sarima:.2f}, Recall: {recall_sarima:.2f}, F1 Score: {f1_sarima:.2f}, Accuracy: {accuracy_sarima:.2f}, MSE: {mse_sarima:.2f}, RMSE: {rmse_sarima:.2f}</div>", unsafe_allow_html=True)
-    st.write(f"<div class='metric'>LSTM - Precision: {precision_lstm:.2f}, Recall: {recall_lstm:.2f}, F1 Score: {f1_lstm:.2f}, Accuracy: {accuracy_lstm:.2f}, MSE: {mse_lstm:.2f}, RMSE: {rmse_lstm:.2f}</div>", unsafe_allow_html=True)
+    st.write(f"<div class='metric'>SARIMA - Precision: {precision_sarima:.2f}, Recall: {recall_sarima:.2f}, F1 Score: {f1_sarima:.2f}, Accuracy: {accuracy_sarima:.2f}, MSE: {mse_sarima:.2f}, RMSE: {rmse_sarima:.2f}, MAE: {mae_sarima:.2f}</div>", unsafe_allow_html=True)
+    st.write(f"<div class='metric'>LSTM - Precision: {precision_lstm:.2f}, Recall: {recall_lstm:.2f}, F1 Score: {f1_lstm:.2f}, Accuracy: {accuracy_lstm:.2f}, MSE: {mse_lstm:.2f}, RMSE: {rmse_lstm:.2f}, MAE: {mae_lstm:.2f}</div>", unsafe_allow_html=True)
     
     # Prepare data for plotting SARIMA and LSTM forecasts
     forecast_data_sarima = pd.DataFrame({
@@ -444,7 +446,6 @@ if page == "Home":
     
     st.write("Forecasted General Index using LSTM:")
     st.dataframe(forecast_data_lstm)
-
 elif page == "Contact Us":
     st.markdown('<div class="title">Contact Us</div>', unsafe_allow_html=True)
     
