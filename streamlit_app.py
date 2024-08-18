@@ -244,8 +244,12 @@ if page == "About Us":
     </div>
     """, unsafe_allow_html=True)
 
+# Set random seed for reproducibility
+np.random.seed(42)
+tf.random.set_seed(42)
+
 # Page: Home
-if page == "Home":
+elif page == "Home":
     st.markdown('<div class="title">General Index Forecasting using LSTM and SARIMA</div>', unsafe_allow_html=True)
     
     # Load the dataset
