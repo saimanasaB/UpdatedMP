@@ -8,13 +8,7 @@ from statsmodels.tsa.statespace.sarimax import SARIMAX
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import LSTM, Dense, Dropout
 import base64
-import pickle
-import os
-import time
 
-# Set the random seed for reproducibility
-np.random.seed(42)
-tf.random.set_seed(42)
 
 # Function to encode the image file to base64
 def get_base64_of_image(image_file):
