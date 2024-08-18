@@ -8,8 +8,8 @@ from statsmodels.tsa.statespace.sarimax import SARIMAX
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import LSTM, Dense, Dropout
 import base64
-
-
+import tensorflow as tf
+from tensorflow.keras.layers import LSTM, Dropout, Dense
 
 # Function to encode the image file to base64
 def get_base64_of_image(image_file):
@@ -244,9 +244,20 @@ if page == "About Us":
     </div>
     """, unsafe_allow_html=True)
 
+
 # Set random seed for reproducibility
 np.random.seed(42)
-tf.random.set_seed(42)
+
+# Check TensorFlow version
+print("TensorFlow version:", tf.__version__)
+
+# Set TensorFlow seed for reproducibility
+if tf.__version__.startswith('2'):
+    tf.random.set_seed(42)
+else:
+    import tensorflow.compat.v1 as tf_v1
+    tf_v1.disable_v2_behavior()
+    tf_v1.set_random_seed(42)
 
 # Page: Home
 if page == "Home":
