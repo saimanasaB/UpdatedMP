@@ -20,31 +20,30 @@ image_path = "bg2.jpg"
 # Convert the image to a Base64 string
 img_base64 = get_base64_of_image(image_path)
 
-# Create the CSS with the Base64 encoded image
 st.markdown(f"""
     <style>
     .main {{
         background-image: url("data:image/jpg;base64,{img_base64}");
         background-size: cover;
         background-position: center;
-        color: #333;
+        color: #f4f4f4;
     }}
     .title {{
-        font-size: 36px;
+        font-size: 42px;
         color: #ffffff;
         text-align: center;
         padding: 20px;
-        background: linear-gradient(to right, #4CAF50, #81C784);
+        background: linear-gradient(to right, #1E88E5, #64B5F6);
         border-radius: 10px;
         box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
         animation: fadeInDown 1s ease-out;
     }}
     .subheader {{
-        font-size: 24px;
+        font-size: 28px;
         color: #ffffff;
         margin-top: 20px;
         margin-bottom: 10px;
-        background: linear-gradient(to right, #2196F3, #64B5F6);
+        background: linear-gradient(to right, #039BE5, #29B6F6);
         padding: 10px;
         border-radius: 8px;
         text-align: center;
@@ -52,7 +51,7 @@ st.markdown(f"""
         animation: fadeInUp 1s ease-out;
     }}
     .metric {{
-        font-size: 18px;
+        font-size: 20px;
         font-weight: bold;
         color: #ffffff;
         background: linear-gradient(to right, #FF5722, #FF8A65);
@@ -76,9 +75,9 @@ st.markdown(f"""
         display: none;
     }}
     .nav label {{
-        background: linear-gradient(to right, #4CAF50, #81C784);
+        background: linear-gradient(to right, #1E88E5, #64B5F6);
         color: #ffffff;
-        padding: 12px 24px;
+        padding: 15px 30px;
         border-radius: 8px;
         cursor: pointer;
         margin: 0 5px;
@@ -88,35 +87,35 @@ st.markdown(f"""
         transition: background 0.3s ease, transform 0.3s ease;
     }}
     .nav label:hover {{
-        background: linear-gradient(to right, #388E3C, #66BB6A);
+        background: linear-gradient(to right, #0D47A1, #1976D2);
         transform: scale(1.05);
     }}
     .nav input[type="radio"]:checked + label {{
         background: linear-gradient(to right, #333333, #616161);
     }}
     .content {{
-        font-size: 22px;
+        font-size: 24px;
         line-height: 1.8;
         color: #333;
-        background: rgba(255, 255, 255, 0.9);
+        background: rgba(255, 255, 255, 0.95);
         padding: 20px;
         border-radius: 12px;
         box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
         animation: fadeIn 2s ease-out;
     }}
     .content h2 {{
-        font-size: 32px;
-        color: #4CAF50;
+        font-size: 36px;
+        color: #1E88E5;
         text-align: center;
         animation: fadeInDown 1s ease-out;
     }}
     .content h3 {{
-        font-size: 26px;
-        color: #2196F3;
+        font-size: 30px;
+        color: #039BE5;
         animation: fadeInUp 1s ease-out;
     }}
     .content ul {{
-        font-size: 20px;
+        font-size: 22px;
         margin: 10px 0;
         padding: 0;
         animation: fadeIn 2s ease-out;
@@ -125,20 +124,20 @@ st.markdown(f"""
         margin-bottom: 10px;
     }}
     .content a {{
-        color: #4CAF50;
+        color: #1E88E5;
         text-decoration: none;
         font-weight: bold;
         transition: color 0.3s ease, transform 0.3s ease;
     }}
     .content a:hover {{
-        color: #388E3C;
+        color: #0D47A1;
         transform: scale(1.05);
     }}
     .form-container {{
-        font-size: 22px;
+        font-size: 24px;
         line-height: 1.8;
         color: #333;
-        background: rgba(255, 255, 255, 0.9);
+        background: rgba(255, 255, 255, 0.95);
         padding: 20px;
         border-radius: 12px;
         box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
@@ -149,7 +148,7 @@ st.markdown(f"""
         flex-direction: column;
     }}
     .form-container label {{
-        font-size: 20px;
+        font-size: 22px;
         margin-top: 10px;
     }}
     .form-container input, .form-container textarea {{
@@ -157,26 +156,26 @@ st.markdown(f"""
         margin-top: 5px;
         border: 1px solid #ddd;
         border-radius: 8px;
-        font-size: 18px;
+        font-size: 20px;
         transition: border 0.3s ease, box-shadow 0.3s ease;
     }}
     .form-container input:focus, .form-container textarea:focus {{
-        border-color: #4CAF50;
-        box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
+        border-color: #1E88E5;
+        box-shadow: 0 0 5px rgba(30, 136, 229, 0.5);
     }}
     .form-container input[type="submit"] {{
-        background: linear-gradient(to right, #4CAF50, #81C784);
+        background: linear-gradient(to right, #1E88E5, #64B5F6);
         color: #ffffff;
-        padding: 12px;
+        padding: 15px;
         border: none;
         border-radius: 8px;
         cursor: pointer;
-        font-size: 20px;
+        font-size: 22px;
         font-weight: bold;
         transition: background 0.3s ease, transform 0.3s ease;
     }}
     .form-container input[type="submit"]:hover {{
-        background: linear-gradient(to right, #388E3C, #66BB6A);
+        background: linear-gradient(to right, #0D47A1, #1976D2);
         transform: translateY(-3px);
     }}
 
@@ -194,7 +193,6 @@ st.markdown(f"""
     }}
     </style>
 """, unsafe_allow_html=True)
-
 # Page navigation
 page = st.radio("", ["About Us", "Home", "Contact Us"], index=1, horizontal=True, key='nav')
 if page == "About Us":
