@@ -1,4 +1,3 @@
-
 import pandas as pd
 import numpy as np
 import altair as alt
@@ -24,77 +23,76 @@ img_base64 = get_base64_of_image(image_path)
 # Create the CSS with the Base64 encoded image
 st.markdown(f"""
     <style>
-    @keyframes fadeIn {{
-        0% {{ opacity: 0; }}
-        100% {{ opacity: 1; }}
-    }}
     .main {{
         background-image: url("data:image/jpg;base64,{img_base64}");
         background-size: cover;
         background-position: center;
         color: #333;
-        animation: fadeIn 2s ease-in-out;
     }}
     .title {{
         font-size: 36px;
         color: #ffffff;
         text-align: center;
         padding: 20px;
-        background: linear-gradient(to right, #673AB7, #9C27B0);
+        background: linear-gradient(to right, #4CAF50, #81C784);
         border-radius: 10px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        animation: fadeIn 1.5s ease-in-out;
+        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+        animation: fadeInDown 1s ease-out;
     }}
     .subheader {{
         font-size: 24px;
         color: #ffffff;
         margin-top: 20px;
         margin-bottom: 10px;
-        background: linear-gradient(to right, #2196F3, #03A9F4);
+        background: linear-gradient(to right, #2196F3, #64B5F6);
         padding: 10px;
         border-radius: 8px;
         text-align: center;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-        animation: fadeIn 1.5s ease-in-out;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        animation: fadeInUp 1s ease-out;
     }}
     .metric {{
         font-size: 18px;
         font-weight: bold;
         color: #ffffff;
-        background: linear-gradient(to right, #FF5722, #FF7043);
+        background: linear-gradient(to right, #FF5722, #FF8A65);
         padding: 10px;
         border-radius: 8px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
         text-align: center;
-        animation: fadeIn 2s ease-in-out;
+        transition: transform 0.3s ease, background 0.3s ease;
+    }}
+    .metric:hover {{
+        transform: translateY(-5px);
+        background: linear-gradient(to right, #FF7043, #FFAB91);
     }}
     .nav {{
         display: flex;
         justify-content: center;
         margin-bottom: 20px;
-        animation: fadeIn 1.5s ease-in-out;
+        animation: fadeIn 1.5s ease-out;
     }}
     .nav input[type="radio"] {{
         display: none;
     }}
     .nav label {{
-        background: linear-gradient(to right, #4CAF50, #8BC34A);
+        background: linear-gradient(to right, #4CAF50, #81C784);
         color: #ffffff;
         padding: 12px 24px;
         border-radius: 8px;
         cursor: pointer;
         margin: 0 5px;
         text-align: center;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
         font-weight: bold;
         transition: background 0.3s ease, transform 0.3s ease;
     }}
-    .nav input[type="radio"]:checked + label {{
-        background: linear-gradient(to right, #333333, #616161);
+    .nav label:hover {{
+        background: linear-gradient(to right, #388E3C, #66BB6A);
         transform: scale(1.05);
     }}
-    .nav label:hover {{
-        transform: scale(1.05);
+    .nav input[type="radio"]:checked + label {{
+        background: linear-gradient(to right, #333333, #616161);
     }}
     .content {{
         font-size: 22px;
@@ -103,33 +101,38 @@ st.markdown(f"""
         background: rgba(255, 255, 255, 0.9);
         padding: 20px;
         border-radius: 12px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        animation: fadeIn 2s ease-in-out;
+        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+        animation: fadeIn 2s ease-out;
     }}
     .content h2 {{
         font-size: 32px;
-        color: #673AB7;
+        color: #4CAF50;
         text-align: center;
+        animation: fadeInDown 1s ease-out;
     }}
     .content h3 {{
         font-size: 26px;
         color: #2196F3;
+        animation: fadeInUp 1s ease-out;
     }}
     .content ul {{
         font-size: 20px;
         margin: 10px 0;
         padding: 0;
+        animation: fadeIn 2s ease-out;
     }}
     .content ul li {{
         margin-bottom: 10px;
     }}
     .content a {{
-        color: #673AB7;
+        color: #4CAF50;
         text-decoration: none;
         font-weight: bold;
+        transition: color 0.3s ease, transform 0.3s ease;
     }}
     .content a:hover {{
-        text-decoration: underline;
+        color: #388E3C;
+        transform: scale(1.05);
     }}
     .form-container {{
         font-size: 22px;
@@ -138,8 +141,8 @@ st.markdown(f"""
         background: rgba(255, 255, 255, 0.9);
         padding: 20px;
         border-radius: 12px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        animation: fadeIn 2s ease-in-out;
+        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+        animation: fadeIn 2s ease-out;
     }}
     .form-container form {{
         display: flex;
@@ -155,9 +158,14 @@ st.markdown(f"""
         border: 1px solid #ddd;
         border-radius: 8px;
         font-size: 18px;
+        transition: border 0.3s ease, box-shadow 0.3s ease;
+    }}
+    .form-container input:focus, .form-container textarea:focus {{
+        border-color: #4CAF50;
+        box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
     }}
     .form-container input[type="submit"] {{
-        background: linear-gradient(to right, #673AB7, #9C27B0);
+        background: linear-gradient(to right, #4CAF50, #81C784);
         color: #ffffff;
         padding: 12px;
         border: none;
@@ -168,8 +176,21 @@ st.markdown(f"""
         transition: background 0.3s ease, transform 0.3s ease;
     }}
     .form-container input[type="submit"]:hover {{
-        background: linear-gradient(to right, #333333, #616161);
-        transform: scale(1.05);
+        background: linear-gradient(to right, #388E3C, #66BB6A);
+        transform: translateY(-3px);
+    }}
+
+    @keyframes fadeIn {{
+        from {{ opacity: 0; }}
+        to {{ opacity: 1; }}
+    }}
+    @keyframes fadeInDown {{
+        from {{ opacity: 0; transform: translateY(-20px); }}
+        to {{ opacity: 1; transform: translateY(0); }}
+    }}
+    @keyframes fadeInUp {{
+        from {{ opacity: 0; transform: translateY(20px); }}
+        to {{ opacity: 1; transform: translateY(0); }}
     }}
     </style>
 """, unsafe_allow_html=True)
@@ -181,7 +202,7 @@ if page == "About Us":
     
     st.markdown("""
     <div style='font-size: 22px; line-height: 1.6; color: #333; background-color: rgba(255, 255, 255, 0.9); padding: 15px; border-radius: 8px;'>
-    <h2 style='font-size: 32px; color: #673AB7;'>Welcome to General Index Forecasting!</h2>
+    <h2 style='font-size: 32px; color: #4CAF50;'>Welcome to General Index Forecasting!</h2>
 
     We are a dedicated team of data scientists and analysts passionate about harnessing the power of data to drive informed decisions. Our mission is to provide actionable insights through advanced forecasting techniques and data-driven analysis.
 
@@ -200,25 +221,27 @@ if page == "About Us":
     <li><strong>Sai Manasa B</strong> - Data Scientist: With over 4 years of experience in data science, Sai specializes in developing machine learning models and data analysis.</li>
     <li><strong>Kimberly Marclin Nathan A</strong> - Data Analyst: Kim has a knack for turning complex data into clear and actionable insights, integrating data analytics into business strategies to drive growth and efficiency.</li>
     </ul>
-        <h3 style='font-size: 26px; color: #2196F3;'>Our Vision:</h3>
+
+    <h3 style='font-size: 26px; color: #2196F3;'>Our Vision:</h3>
     We aim to be at the forefront of data science and analytics, continuously innovating to provide our clients, including MOSPI, with the best tools and strategies for success. Our goal is to empower organizations with the knowledge and foresight to make data-driven decisions.
 
-    <h3 style='font-size: 26px; color: #2196F3;'>Why Choose Us?</h3>
+    <h3 style='font-size: 26px; color: #2196F3;'>Our Values:</h3>
     <ul style='font-size: 20px;'>
-    <li><strong>Innovative Solutions:</strong> We offer cutting-edge tools and technologies that help you stay ahead of the curve.</li>
-    <li><strong>Tailored Strategies:</strong> Our solutions are customized to meet your specific business needs and objectives.</li>
-    <li><strong>Expert Team:</strong> Our team comprises experienced professionals with a deep understanding of data science and analytics.</li>
-    <li><strong>Commitment to Excellence:</strong> We strive for excellence in everything we do, ensuring that our clients receive the highest quality service.</li>
+    <li><strong>Integrity:</strong> We uphold the highest standards of honesty and transparency.</li>
+    <li><strong>Innovation:</strong> We embrace creativity and new ideas to solve complex problems.</li>
+    <li><strong>Excellence:</strong> We are committed to delivering high-quality results and solutions.</li>
     </ul>
 
-    <h3 style='font-size: 26px; color: #2196F3;'>Get in Touch:</h3>
-    Interested in learning more about how we can assist your organization? Contact us today to discuss your data needs and explore how we can help you achieve your goals.
+    <h3 style='font-size: 26px; color: #2196F3;'>Get Involved:</h3>
+    We are always looking to collaborate with like-minded professionals and organizations. If you're interested in working with us or learning more about our services, please reach out through our contact page.
 
+    <br><br><center>Thank you for visiting our website and learning more about us!</center>
     </div>
     """, unsafe_allow_html=True)
 
 elif page == "Home":
     st.markdown('<div class="title">General Index Forecasting using LSTM and SARIMA</div>', unsafe_allow_html=True)
+    
     # Load the dataset
     file_path = st.text_input('Enter file path of cleaned data (e.g., cleaned_data.csv)', 'cleaned_data.csv')
     data = pd.read_csv(file_path)
@@ -411,22 +434,49 @@ elif page == "Home":
     st.dataframe(forecast_data_lstm)
 
 elif page == "Contact Us":
-    
     st.markdown('<div class="title">Contact Us</div>', unsafe_allow_html=True)
+    
     st.markdown("""
-    <div class='form-container'>
-    <form action="/submit_contact_form" method="post">
-        <label for="name">Name:</label>
-        <input type="text" id="name" name="name" required>
+    <div style='font-size: 22px; line-height: 1.6; color: #333; background-color: rgba(255, 255, 255, 0.9); padding: 15px; border-radius: 8px;'>
+    <h2 style='font-size: 32px; color: #4CAF50;'>We'd Love to Hear from You!</h2>
 
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email" required>
+    Whether you have questions, feedback, or are interested in our services, please don't hesitate to reach out to us. We're here to help!
 
-        <label for="message">Message:</label>
-        <textarea id="message" name="message" rows="5" required></textarea>
+    <h3 style='font-size: 26px; color: #2196F3;'>Contact Information:</h3>
+    <ul style='font-size: 20px;'>
+    <li><strong>Email:</strong> <a href="mailto:kimsai@gmail.com" style="color: #4CAF50;">kimsai@gmail.com</a></li>
+    <li><strong>Phone:</strong> +91-948-678-890</li>
+    <li><strong>Address:</strong> 123 Data Street, Analytics City, DataLand</li>
+    </ul>
 
+    <h3 style='font-size: 26px; color: #2196F3;'>Business Hours:</h3>
+    <ul style='font-size: 20px;'>
+    <li><strong>Monday to Friday:</strong> 9:00 AM - 6:00 PM (IST)</li>
+    <li><strong>Saturday:</strong> 10:00 AM - 4:00 PM (IST)</li>
+    <li><strong>Sunday:</strong> Closed</li>
+    </ul>
+
+    <h3 style='font-size: 26px; color: #2196F3;'>Follow Us:</h3>
+    <ul style='font-size: 20px;'>
+    <li><a href="https://www.linkedin.com/in/sai-manasa-b-1765b420b/" style="color: #4CAF50;">LinkedIn</a></li>
+    <li><a href="https://twitter.com/example" style="color: #4CAF50;">Twitter</a></li>
+    <li><a href="https://facebook.com/example" style="color: #4CAF50;">Facebook</a></li>
+    </ul>
+    <h3 style='font-size: 26px; color: #2196F3;'>Get In Touch:</h3>
+    If you have any inquiries or would like to discuss potential projects, please fill out the contact form below or use the contact details provided.<br><br>
+    <h3 style='font-size: 22px; color: #2196F3;'>Feedback Form:</h3>
+    <p>We appreciate your feedback. Please fill out the form below:</p>
+    
+    <form action="https://example.com/feedback" method="post">
+        <label for="name">Name:</label><br>
+        <input type="text" id="name" name="name" required><br>
+        <label for="email">Email:</label><br>
+        <input type="email" id="email" name="email" required><br>
+        <label for="message">Message:</label><br>
+        <textarea id="message" name="message" rows="4" required></textarea><br>
         <input type="submit" value="Submit">
     </form>
+
+    Thank you for your interest in connecting with us!
     </div>
     """, unsafe_allow_html=True)
-
