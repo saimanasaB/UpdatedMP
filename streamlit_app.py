@@ -245,24 +245,15 @@ if page == "About Us":
     """, unsafe_allow_html=True)
 
 
-# Set random seed for reproducibility
+# Set random seeds for reproducibility
 np.random.seed(42)
+tf.random.set_seed(42)
 
-# Check TensorFlow version
-print("TensorFlow version:", tf.__version__)
-
-# Set TensorFlow seed for reproducibility
-if tf.__version__.startswith('2'):
-    tf.random.set_seed(42)
-else:
-    import tensorflow.compat.v1 as tf_v1
-    tf_v1.disable_v2_behavior()
-    tf_v1.set_random_seed(42)
 
 # Page: Home
 if page == "Home":
-    st.markdown('<div class="title">General Index Forecasting using LSTM and SARIMA</div>', unsafe_allow_html=True)
-    
+    st.title("General Index Forecasting using LSTM and SARIMA")
+
     # Load the dataset
     file_path = st.text_input('Enter file path of cleaned data (e.g., cleaned_data.csv)', 'cleaned_data.csv')
     data = pd.read_csv(file_path)
@@ -389,8 +380,8 @@ if page == "Home":
     rmse_lstm = np.sqrt(mse_lstm)
     
     st.subheader('Model Evaluation Metrics')
-    st.write(f"<div class='metric'>SARIMA - Precision: {precision_sarima}, Recall: {recall_sarima}, F1 Score: {f1_sarima}, Accuracy: {accuracy_sarima}, MSE: {mse_sarima}, RMSE: {rmse_sarima}</div>", unsafe_allow_html=True)
-    st.write(f"<div class='metric'>LSTM - Precision: {precision_lstm}, Recall: {recall_lstm}, F1 Score: {f1_lstm}, Accuracy: {accuracy_lstm}, MSE: {mse_lstm}, RMSE: {rmse_lstm}</div>", unsafe_allow_html=True)
+    st.write(f"<div class='metric'>SARIMA - Precision: {precision_sarima:.2f}, Recall: {recall_sarima:.2f}, F1 Score: {f1_sarima:.2f}, Accuracy: {accuracy_sarima:.2f}, MSE: {mse_sarima:.2f}, RMSE: {rmse_sarima:.2f}</div>", unsafe_allow_html=True)
+    st.write(f"<div class='metric'>LSTM - Precision: {precision_lstm:.2f}, Recall: {recall_lstm:.2f}, F1 Score: {f1_lstm:.2f}, Accuracy: {accuracy_lstm:.2f}, MSE: {mse_lstm:.2f}, RMSE: {rmse_lstm:.2f}</div>", unsafe_allow_html=True)
     
     # Prepare data for plotting SARIMA and LSTM forecasts
     forecast_data_sarima = pd.DataFrame({
@@ -453,6 +444,7 @@ if page == "Home":
     
     st.write("Forecasted General Index using LSTM:")
     st.dataframe(forecast_data_lstm)
+
 elif page == "Contact Us":
     st.markdown('<div class="title">Contact Us</div>', unsafe_allow_html=True)
     
