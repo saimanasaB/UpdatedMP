@@ -19,7 +19,6 @@ image_path = "bg2.jpg"
 
 # Convert the image to a Base64 string
 img_base64 = get_base64_of_image(image_path)
-
 st.markdown(f"""
     <style>
     .main {{
@@ -29,41 +28,44 @@ st.markdown(f"""
         color: #f4f4f4;
     }}
     .title {{
-        font-size: 42px;
-        color: #ffffff;
+        font-size: 48px;
+        color: #FFFFFF;
         text-align: center;
         padding: 20px;
-        background: linear-gradient(to right, #1E88E5, #64B5F6);
+        background: linear-gradient(to right, #FF5722, #FF9800);
         border-radius: 10px;
-        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
         animation: fadeInDown 1s ease-out;
+        font-family: 'Montserrat', sans-serif;
     }}
     .subheader {{
-        font-size: 28px;
-        color: #ffffff;
+        font-size: 32px;
+        color: #FFFFFF;
         margin-top: 20px;
         margin-bottom: 10px;
-        background: linear-gradient(to right, #039BE5, #29B6F6);
+        background: linear-gradient(to right, #4CAF50, #8BC34A);
         padding: 10px;
         border-radius: 8px;
         text-align: center;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
         animation: fadeInUp 1s ease-out;
+        font-family: 'Roboto', sans-serif;
     }}
     .metric {{
-        font-size: 20px;
+        font-size: 22px;
         font-weight: bold;
-        color: #ffffff;
-        background: linear-gradient(to right, #FF5722, #FF8A65);
-        padding: 10px;
-        border-radius: 8px;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        color: #FFFFFF;
+        background: linear-gradient(to right, #673AB7, #9C27B0);
+        padding: 12px;
+        border-radius: 10px;
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
         text-align: center;
         transition: transform 0.3s ease, background 0.3s ease;
+        font-family: 'Open Sans', sans-serif;
     }}
     .metric:hover {{
-        transform: translateY(-5px);
-        background: linear-gradient(to right, #FF7043, #FFAB91);
+        transform: translateY(-7px);
+        background: linear-gradient(to right, #7E57C2, #B39DDB);
     }}
     .nav {{
         display: flex;
@@ -75,108 +77,111 @@ st.markdown(f"""
         display: none;
     }}
     .nav label {{
-        background: linear-gradient(to right, #1E88E5, #64B5F6);
-        color: #ffffff;
+        background: linear-gradient(to right, #3F51B5, #5C6BC0);
+        color: #FFFFFF;
         padding: 15px 30px;
         border-radius: 8px;
         cursor: pointer;
         margin: 0 5px;
         text-align: center;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
         font-weight: bold;
         transition: background 0.3s ease, transform 0.3s ease;
+        font-family: 'Lato', sans-serif;
     }}
     .nav label:hover {{
-        background: linear-gradient(to right, #0D47A1, #1976D2);
+        background: linear-gradient(to right, #283593, #3949AB);
         transform: scale(1.05);
     }}
     .nav input[type="radio"]:checked + label {{
-        background: linear-gradient(to right, #333333, #616161);
+        background: linear-gradient(to right, #1C1C1C, #616161);
     }}
     .content {{
-        font-size: 24px;
+        font-size: 26px;
         line-height: 1.8;
         color: #333;
         background: rgba(255, 255, 255, 0.95);
         padding: 20px;
         border-radius: 12px;
-        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
         animation: fadeIn 2s ease-out;
+        font-family: 'Poppins', sans-serif;
     }}
     .content h2 {{
-        font-size: 36px;
-        color: #1E88E5;
+        font-size: 38px;
+        color: #FF9800;
         text-align: center;
         animation: fadeInDown 1s ease-out;
     }}
     .content h3 {{
-        font-size: 30px;
-        color: #039BE5;
+        font-size: 32px;
+        color: #4CAF50;
         animation: fadeInUp 1s ease-out;
     }}
     .content ul {{
-        font-size: 22px;
+        font-size: 24px;
         margin: 10px 0;
         padding: 0;
         animation: fadeIn 2s ease-out;
     }}
     .content ul li {{
-        margin-bottom: 10px;
+        margin-bottom: 15px;
     }}
     .content a {{
-        color: #1E88E5;
+        color: #673AB7;
         text-decoration: none;
         font-weight: bold;
         transition: color 0.3s ease, transform 0.3s ease;
     }}
     .content a:hover {{
-        color: #0D47A1;
+        color: #311B92;
         transform: scale(1.05);
     }}
     .form-container {{
-        font-size: 24px;
+        font-size: 26px;
         line-height: 1.8;
         color: #333;
         background: rgba(255, 255, 255, 0.95);
         padding: 20px;
         border-radius: 12px;
-        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
         animation: fadeIn 2s ease-out;
+        font-family: 'Muli', sans-serif;
     }}
     .form-container form {{
         display: flex;
         flex-direction: column;
     }}
     .form-container label {{
-        font-size: 22px;
+        font-size: 24px;
         margin-top: 10px;
     }}
     .form-container input, .form-container textarea {{
-        padding: 10px;
+        padding: 12px;
         margin-top: 5px;
         border: 1px solid #ddd;
         border-radius: 8px;
-        font-size: 20px;
+        font-size: 22px;
         transition: border 0.3s ease, box-shadow 0.3s ease;
     }}
     .form-container input:focus, .form-container textarea:focus {{
-        border-color: #1E88E5;
-        box-shadow: 0 0 5px rgba(30, 136, 229, 0.5);
+        border-color: #673AB7;
+        box-shadow: 0 0 8px rgba(103, 58, 183, 0.5);
     }}
     .form-container input[type="submit"] {{
-        background: linear-gradient(to right, #1E88E5, #64B5F6);
+        background: linear-gradient(to right, #673AB7, #9C27B0);
         color: #ffffff;
         padding: 15px;
         border: none;
         border-radius: 8px;
         cursor: pointer;
-        font-size: 22px;
+        font-size: 24px;
         font-weight: bold;
         transition: background 0.3s ease, transform 0.3s ease;
     }}
     .form-container input[type="submit"]:hover {{
-        background: linear-gradient(to right, #0D47A1, #1976D2);
-        transform: translateY(-3px);
+        background: linear-gradient(to right, #5E35B1, #7B1FA2);
+        transform: translateY(-5px);
     }}
 
     @keyframes fadeIn {{
