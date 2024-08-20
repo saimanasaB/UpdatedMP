@@ -21,6 +21,183 @@ image_path = "bg.jpg"
 # Convert the image to a Base64 string
 img_base64 = get_base64_of_image(image_path)
 st.markdown(f"""
+    <style>
+    .main {{
+        background-image: url("data:image/jpg;base64,{img_base64}");
+        background-size: cover;
+        background-position: center;
+        color: #f4f4f4;
+    }}
+    .title {{
+        font-size: 48px;
+        color: #FFFFFF;
+        text-align: center;
+        padding: 20px;
+        background: linear-gradient(to right, #FF5722, #FF9800);
+        border-radius: 10px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+        animation: fadeInDown 1s ease-out;
+        font-family: 'Montserrat', sans-serif;
+    }}
+    .subheader {{
+        font-size: 32px;
+        color: #FFFFFF;
+        margin-top: 20px;
+        margin-bottom: 10px;
+        background: linear-gradient(to right, #4CAF50, #8BC34A);
+        padding: 10px;
+        border-radius: 8px;
+        text-align: center;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        animation: fadeInUp 1s ease-out;
+        font-family: 'Roboto', sans-serif;
+    }}
+    .metric {{
+        font-size: 22px;
+        font-weight: bold;
+        color: #FFFFFF;
+        background: linear-gradient(to right, #673AB7, #9C27B0);
+        padding: 12px;
+        border-radius: 10px;
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+        text-align: center;
+        transition: transform 0.3s ease, background 0.3s ease;
+        font-family: 'Open Sans', sans-serif;
+    }}
+    .metric:hover {{
+        transform: translateY(-7px);
+        background: linear-gradient(to right, #7E57C2, #B39DDB);
+    }}
+    .nav {{
+        display: flex;
+        justify-content: center;
+        margin-bottom: 20px;
+        animation: fadeIn 1.5s ease-out;
+    }}
+    .nav input[type="radio"] {{
+        display: none;
+    }}
+    .nav label {{
+        background: linear-gradient(to right, #3F51B5, #5C6BC0);
+        color: #FFFFFF;
+        padding: 15px 30px;
+        border-radius: 8px;
+        cursor: pointer;
+        margin: 0 5px;
+        text-align: center;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        font-weight: bold;
+        transition: background 0.3s ease, transform 0.3s ease;
+        font-family: 'Lato', sans-serif;
+    }}
+    .nav label:hover {{
+        background: linear-gradient(to right, #283593, #3949AB);
+        transform: scale(1.05);
+    }}
+    .nav input[type="radio"]:checked + label {{
+        background: linear-gradient(to right, #1C1C1C, #616161);
+    }}
+    .content {{
+        font-size: 26px;
+        line-height: 1.8;
+        color: #333;
+        background: rgba(255, 255, 255, 0.95);
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        animation: fadeIn 2s ease-out;
+        font-family: 'Poppins', sans-serif;
+    }}
+    .content h2 {{
+        font-size: 38px;
+        color: #FF9800;
+        text-align: center;
+        animation: fadeInDown 1s ease-out;
+    }}
+    .content h3 {{
+        font-size: 32px;
+        color: #4CAF50;
+        animation: fadeInUp 1s ease-out;
+    }}
+    .content ul {{
+        font-size: 24px;
+        margin: 10px 0;
+        padding: 0;
+        animation: fadeIn 2s ease-out;
+    }}
+    .content ul li {{
+        margin-bottom: 15px;
+    }}
+    .content a {{
+        color: #673AB7;
+        text-decoration: none;
+        font-weight: bold;
+        transition: color 0.3s ease, transform 0.3s ease;
+    }}
+    .content a:hover {{
+        color: #311B92;
+        transform: scale(1.05);
+    }}
+    .form-container {{
+        font-size: 26px;
+        line-height: 1.8;
+        color: #333;
+        background: rgba(255, 255, 255, 0.95);
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        animation: fadeIn 2s ease-out;
+        font-family: 'Muli', sans-serif;
+    }}
+    .form-container form {{
+        display: flex;
+        flex-direction: column;
+    }}
+    .form-container label {{
+        font-size: 24px;
+        margin-top: 10px;
+    }}
+    .form-container input, .form-container textarea {{
+        padding: 12px;
+        margin-top: 5px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 22px;
+        transition: border 0.3s ease, box-shadow 0.3s ease;
+    }}
+    .form-container input:focus, .form-container textarea:focus {{
+        border-color: #673AB7;
+        box-shadow: 0 0 8px rgba(103, 58, 183, 0.5);
+    }}
+    .form-container input[type="submit"] {{
+        background: linear-gradient(to right, #673AB7, #9C27B0);
+        color: #ffffff;
+        padding: 15px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 24px;
+        font-weight: bold;
+        transition: background 0.3s ease, transform 0.3s ease;
+    }}
+    .form-container input[type="submit"]:hover {{
+        background: linear-gradient(to right, #5E35B1, #7B1FA2);
+        transform: translateY(-5px);
+    }}
+
+    @keyframes fadeIn {{
+        from {{ opacity: 0; }}
+        to {{ opacity: 1; }}
+    }}
+    @keyframes fadeInDown {{
+        from {{ opacity: 0; transform: translateY(-20px); }}
+        to {{ opacity: 1; transform: translateY(0); }}
+    }}
+    @keyframes fadeInUp {{
+        from {{ opacity: 0; transform: translateY(20px); }}
+        to {{ opacity: 1; transform: translateY(0); }}
+    }}
+    </style>
 """, unsafe_allow_html=True)
 # Page navigation
 page = st.radio("", ["About Us", "Home", "Contact Us"], index=1, horizontal=True, key='nav')
